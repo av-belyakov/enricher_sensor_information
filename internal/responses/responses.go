@@ -8,37 +8,13 @@ type Response struct {
 }
 
 type DetailedInformation struct {
-	IpRange struct {
-		IpFirst string `json:"ip_first"`
-		IpLast  string `json:"ip_last"`
-	} `json:"ip_range"`
-	IpAddr    string `json:"ip_address"`
-	Code      string `json:"code"`
-	Country   string `json:"country"`
-	City      string `json:"city"`
-	Subnet    string `json:"subnet"`
-	UpdatedAt string `json:"updated_at"`
-	Error     string `json:"error"`
-}
-
-type ResponseGeoIPDataBase struct {
-	IpLocations             []IpAddrLocation `json:"ip_locations"`
-	InternetProtocolVersion string           `json:"address_version"`
-}
-
-type IpAddrLocation struct {
-	Asns        []any  `json:"asns"`
-	City        string `json:"city"`
-	Country     string `json:"country"`
-	CountryCode string `json:"country_code"`
-	IpRange     struct {
-		IpFirst string `json:"ip_first"`
-		IpLast  string `json:"ip_last"`
-	} `json:"ip_range"`
-	Isp       string `json:"isp"`
-	Region    string `json:"region"`
-	Source    string `json:"source"`
-	Subnet    string `json:"subnet"`
-	UpdatedAt string `json:"updated_at"`
-	Rating    int    `json:"rating"`
+	INN                      string `json:"inn"`                        //налоговый идентификатор
+	HomeNet                  string `json:"home_net"`                   //перечень домашних сетей
+	OrgName                  string `json:"organization_name"`          //наименование организации
+	SensorId                 string `json:"sensor_id"`                  //идентификатор сенсора
+	ObjectArea               string `json:"object_area"`                //сфера деятельности объекта
+	FullOrgName              string `json:"full_organization_name"`     //полное наименование организации
+	SpecialSensorId          string `json:"special_sensor_id"`          //идентификатор сенсора, специальный, для поиска информации в НКЦКИ
+	SubjectRussianFederation string `json:"subject_russian_federation"` //субъект Российской Федерации
+	Error                    string `json:"error"`
 }
