@@ -9,10 +9,10 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"github.com/av-belyakov/enricher_geoip/cmd/natsapi/storagetemporary"
-	"github.com/av-belyakov/enricher_geoip/constants"
-	"github.com/av-belyakov/enricher_geoip/interfaces"
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi/storagetemporary"
+	"github.com/av-belyakov/enricher_sensor_information/constants"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // New настраивает новый модуль взаимодействия с API NATS

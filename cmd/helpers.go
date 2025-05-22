@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/av-belyakov/enricher_geoip/constants"
-	"github.com/av-belyakov/enricher_geoip/internal/appname"
-	"github.com/av-belyakov/enricher_geoip/internal/appversion"
+	"github.com/av-belyakov/enricher_sensor_information/internal/appname"
+	"github.com/av-belyakov/enricher_sensor_information/internal/appversion"
 )
 
 func getInformationMessage() string {

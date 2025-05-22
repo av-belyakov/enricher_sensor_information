@@ -13,7 +13,7 @@ import (
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // NewElasticsearchConnect конструктор соединения с БД Elasticsearch

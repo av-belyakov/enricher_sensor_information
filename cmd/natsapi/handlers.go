@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 
-	"github.com/av-belyakov/enricher_geoip/internal/responses"
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // subscriptionHandler обработчик подписки приёма запросов

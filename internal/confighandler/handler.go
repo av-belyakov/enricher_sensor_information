@@ -11,7 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
 
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 func New(rootDir string) (*ConfigApp, error) {
@@ -20,26 +20,30 @@ func New(rootDir string) (*ConfigApp, error) {
 	var (
 		validate *validator.Validate
 		envList  map[string]string = map[string]string{
-			"GO_ENRICHERGEOIP_MAIN": "",
+			"GO_ENRICHERSENSORINFO_MAIN": "",
 
 			//Подключение к NATS
-			"GO_ENRICHERGEOIP_NHOST":     "",
-			"GO_ENRICHERGEOIP_NPORT":     "",
-			"GO_ENRICHERGEOIP_NSUBSC":    "",
-			"GO_ENRICHERGEOIP_NCACHETTL": "",
+			"GO_ENRICHERSENSORINFO_NHOST":     "",
+			"GO_ENRICHERSENSORINFO_NPORT":     "",
+			"GO_ENRICHERSENSORINFO_NSUBSC":    "",
+			"GO_ENRICHERSENSORINFO_NCACHETTL": "",
 
-			//Подключение к GeoIP БД
-			"GO_ENRICHERGEOIP_GIPHOST": "",
-			"GO_ENRICHERGEOIP_GIPPOST": "",
-			"GO_ENRICHERGEOIP_GIPPATH": "",
+			//Подключение к БД с информацией о сенсорах
+			"GO_ENRICHERSENSORINFO_SIHOST":        "",
+			"GO_ENRICHERSENSORINFO_SIPORT":        "",
+			"GO_ENRICHERSENSORINFO_SIUSER":        "",
+			"GO_ENRICHERSENSORINFO_SIPASSWD":      "",
+			"GO_ENRICHERSENSORINFO_SIRTIMEOUT":    "",
+			"GO_ENRICHERSENSORINFO_SINCIRCCURL":   "",
+			"GO_ENRICHERSENSORINFO_SINCIRCCTOKEN": "",
 
 			//Настройки доступа к БД в которую будут записыватся логи
-			"GO_ENRICHERGEOIP_DBWLOGHOST":        "",
-			"GO_ENRICHERGEOIP_DBWLOGPORT":        "",
-			"GO_ENRICHERGEOIP_DBWLOGNAME":        "",
-			"GO_ENRICHERGEOIP_DBWLOGUSER":        "",
-			"GO_ENRICHERGEOIP_DBWLOGPASSWD":      "",
-			"GO_ENRICHERGEOIP_DBWLOGSTORAGENAME": "",
+			"GO_ENRICHERSENSORINFO_DBWLOGHOST":        "",
+			"GO_ENRICHERSENSORINFO_DBWLOGPORT":        "",
+			"GO_ENRICHERSENSORINFO_DBWLOGNAME":        "",
+			"GO_ENRICHERSENSORINFO_DBWLOGUSER":        "",
+			"GO_ENRICHERSENSORINFO_DBWLOGPASSWD":      "",
+			"GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME": "",
 		}
 	)
 
@@ -113,17 +117,20 @@ func New(rootDir string) (*ConfigApp, error) {
 		}
 
 		// Настройки доступа к БД GeoIP
-		if viper.IsSet("GeoIPDataBase.host") {
-			conf.GeoIPDB.Host = viper.GetString("GeoIPDataBase.host")
+		if viper.IsSet("SensorInformationDataBase.host") {
+			conf.SensorInformationDB.Host = viper.GetString("SensorInformationDataBase.host")
 		}
-		if viper.IsSet("GeoIPDataBase.port") {
-			conf.GeoIPDB.Port = viper.GetInt("GeoIPDataBase.port")
+		if viper.IsSet("SensorInformationDataBase.port") {
+			conf.SensorInformationDB.Port = viper.GetInt("SensorInformationDataBase.port")
 		}
-		if viper.IsSet("GeoIPDataBase.path") {
-			conf.GeoIPDB.Path = viper.GetString("GeoIPDataBase.path")
+		if viper.IsSet("SensorInformationDataBase.user") {
+			conf.SensorInformationDB.User = viper.GetString("SensorInformationDataBase.user")
 		}
-		if viper.IsSet("GeoIPDataBase.request_timeout") {
-			conf.GeoIPDB.RequestTimeout = viper.GetInt("GeoIPDataBase.request_timeout")
+		if viper.IsSet("SensorInformationDataBase.ncircc_url") {
+			conf.SensorInformationDB.NCIRCCURL = viper.GetString("SensorInformationDataBase.ncircc_url")
+		}
+		if viper.IsSet("SensorInformationDataBase.request_timeout") {
+			conf.SensorInformationDB.RequestTimeout = viper.GetInt("SensorInformationDataBase.request_timeout")
 		}
 
 		// Настройки доступа к БД в которую будут записыватся логи
@@ -176,7 +183,7 @@ func New(rootDir string) (*ConfigApp, error) {
 	}
 
 	var fn string
-	if envList["GO_ENRICHERGEOIP_MAIN"] == "development" {
+	if envList["GO_ENRICHERSENSORINFO_MAIN"] == "development" {
 		fn, err = getFileName("config_dev.yml", confPath, list)
 		if err != nil {
 			return conf, err
@@ -193,56 +200,71 @@ func New(rootDir string) (*ConfigApp, error) {
 	}
 
 	//Настройки для модуля подключения к NATS
-	if envList["GO_ENRICHERGEOIP_NHOST"] != "" {
-		conf.NATS.Host = envList["GO_ENRICHERGEOIP_NHOST"]
+	if envList["GO_ENRICHERSENSORINFO_NHOST"] != "" {
+		conf.NATS.Host = envList["GO_ENRICHERSENSORINFO_NHOST"]
 	}
-	if envList["GO_ENRICHERGEOIP_NPORT"] != "" {
-		if p, err := strconv.Atoi(envList["GO_ENRICHERGEOIP_NPORT"]); err == nil {
+	if envList["GO_ENRICHERSENSORINFO_NPORT"] != "" {
+		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NPORT"]); err == nil {
 			conf.NATS.Port = p
 		}
 	}
-	if envList["GO_ENRICHERGEOIP_NCACHETTL"] != "" {
-		if ttl, err := strconv.Atoi(envList["GO_ENRICHERGEOIP_NCACHETTL"]); err == nil {
+	if envList["GO_ENRICHERSENSORINFO_NCACHETTL"] != "" {
+		if ttl, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NCACHETTL"]); err == nil {
 			conf.NATS.CacheTTL = ttl
 		}
 	}
-	if envList["GO_ENRICHERGEOIP_NSUBSC"] != "" {
-		conf.NATS.Subscription = envList["GO_ENRICHERGEOIP_NSUBSC"]
+	if envList["GO_ENRICHERSENSORINFO_NSUBSC"] != "" {
+		conf.NATS.Subscription = envList["GO_ENRICHERSENSORINFO_NSUBSC"]
 	}
 
-	//Настройки доступа к БД GeoIP
-	if envList["GO_ENRICHERGEOIP_GIPHOST"] != "" {
-		conf.GeoIPDB.Host = envList["GO_ENRICHERGEOIP_GIPHOST"]
+	//Подключение к БД с информацией о сенсорах
+	if envList["GO_ENRICHERSENSORINFO_SIHOST"] != "" {
+		conf.SensorInformationDB.Host = envList["GO_ENRICHERSENSORINFO_SIHOST"]
 	}
-	if envList["GO_ENRICHERGEOIP_GIPPOST"] != "" {
-		if p, err := strconv.Atoi(envList["GO_ENRICHERGEOIP_GIPPOST"]); err == nil {
-			conf.GeoIPDB.Port = p
+	if envList["GO_ENRICHERSENSORINFO_SIPORT"] != "" {
+		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_SIPORT"]); err == nil {
+			conf.SensorInformationDB.Port = p
 		}
 	}
-	if envList["GO_ENRICHERGEOIP_GIPPATH"] != "" {
-		conf.GeoIPDB.Path = envList["GO_ENRICHERGEOIP_GIPPATH"]
+	if envList["GO_ENRICHERSENSORINFO_SIUSER"] != "" {
+		conf.SensorInformationDB.User = envList["GO_ENRICHERSENSORINFO_SIUSER"]
+	}
+
+	if envList["GO_ENRICHERSENSORINFO_SIPASSWD"] != "" {
+		conf.SensorInformationDB.Passwd = envList["GO_ENRICHERSENSORINFO_SIPASSWD"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_SIRTIMEOUT"] != "" {
+		if timeout, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_SIRTIMEOUT"]); err == nil {
+			conf.SensorInformationDB.RequestTimeout = timeout
+		}
+	}
+	if envList["GO_ENRICHERSENSORINFO_SINCIRCCURL"] != "" {
+		conf.SensorInformationDB.NCIRCCURL = envList["GO_ENRICHERSENSORINFO_SINCIRCCURL"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_SINCIRCCTOKEN"] != "" {
+		conf.SensorInformationDB.NCIRCCToken = envList["GO_ENRICHERSENSORINFO_SINCIRCCTOKEN"]
 	}
 
 	//Настройки доступа к БД в которую будут записыватся логи
-	if envList["GO_ENRICHERGEOIP_DBWLOGHOST"] != "" {
-		conf.LogDB.Host = envList["GO_ENRICHERGEOIP_DBWLOGHOST"]
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGHOST"] != "" {
+		conf.LogDB.Host = envList["GO_ENRICHERSENSORINFO_DBWLOGHOST"]
 	}
-	if envList["GO_ENRICHERGEOIP_DBWLOGPORT"] != "" {
-		if p, err := strconv.Atoi(envList["GO_ENRICHERGEOIP_DBWLOGPORT"]); err == nil {
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGPORT"] != "" {
+		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_DBWLOGPORT"]); err == nil {
 			conf.LogDB.Port = p
 		}
 	}
-	if envList["GO_ENRICHERGEOIP_DBWLOGNAME"] != "" {
-		conf.LogDB.NameDB = envList["GO_ENRICHERGEOIP_DBWLOGNAME"]
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGNAME"] != "" {
+		conf.LogDB.NameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGNAME"]
 	}
-	if envList["GO_ENRICHERGEOIP_DBWLOGUSER"] != "" {
-		conf.LogDB.User = envList["GO_ENRICHERGEOIP_DBWLOGUSER"]
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGUSER"] != "" {
+		conf.LogDB.User = envList["GO_ENRICHERSENSORINFO_DBWLOGUSER"]
 	}
-	if envList["GO_ENRICHERGEOIP_DBWLOGPASSWD"] != "" {
-		conf.LogDB.Passwd = envList["GO_ENRICHERGEOIP_DBWLOGPASSWD"]
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGPASSWD"] != "" {
+		conf.LogDB.Passwd = envList["GO_ENRICHERSENSORINFO_DBWLOGPASSWD"]
 	}
-	if envList["GO_ENRICHERGEOIP_DBWLOGSTORAGENAME"] != "" {
-		conf.LogDB.StorageNameDB = envList["GO_ENRICHERGEOIP_DBWLOGSTORAGENAME"]
+	if envList["GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME"] != "" {
+		conf.LogDB.StorageNameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME"]
 	}
 
 	//выполняем проверку заполненой структуры
