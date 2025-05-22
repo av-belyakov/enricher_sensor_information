@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/av-belyakov/enricher_geoip/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
 )
 
 // New конструктор обработки логов

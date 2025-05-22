@@ -4,6 +4,8 @@ go 1.24.3
 
 require (
 	github.com/av-belyakov/enricher_geoip v0.0.0-20250521115708-1c9a9aefd69d
+	github.com/av-belyakov/simplelogger v0.0.0-20250225125610-1e1723ce15ea
+	github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250512120600-9940a6578ff4
 	github.com/elastic/go-elasticsearch/v8 v8.18.0
 	github.com/go-playground/validator/v10 v10.26.0
 	github.com/google/uuid v1.6.0

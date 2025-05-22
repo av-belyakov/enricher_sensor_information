@@ -62,7 +62,7 @@ func (api *apiNatsModule) Start(ctx context.Context) error {
 	nc, err := nats.Connect(
 		fmt.Sprintf("%s:%d", api.settings.host, api.settings.port),
 		//имя клиента
-		nats.Name(fmt.Sprintf("placeholder_docbase_db.%s", api.settings.nameRegionalObject)),
+		nats.Name(fmt.Sprintf("enricher_sensor_information.%s", api.settings.nameRegionalObject)),
 		//неограниченное количество попыток переподключения
 		nats.MaxReconnects(-1),
 		//время ожидания до следующей попытки переподключения (по умолчанию 2 сек.)
@@ -96,7 +96,7 @@ func (api *apiNatsModule) Start(ctx context.Context) error {
 
 	api.natsConn = nc
 
-	//обработчик подписки запросов поиска информации по БД GeoIP
+	//обработчик подписки запросов поиска информации
 	go api.subscriptionRequestHandler()
 
 	//обработчик информации полученной изнутри приложения
