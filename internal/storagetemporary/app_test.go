@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/av-belyakov/enricher_geoip/internal/storagetemporary"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/av-belyakov/enricher_sensor_information/internal/storagetemporary"
 )
 
 func TestApp(t *testing.T) {

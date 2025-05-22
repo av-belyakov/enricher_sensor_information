@@ -12,9 +12,9 @@ func (c *ConfigApp) GetNATS() *CfgNats {
 	return &c.NATS
 }
 
-// GetGeoIPDB настройки для GeoIP DB
-func (c *ConfigApp) GetGeoIPDB() *CfgGeoIPDB {
-	return &c.GeoIPDB
+// GetSensorInformationDB настройки записи данных в БД
+func (c *ConfigApp) GetSensorInformationDB() *CfgSensorInformationDB {
+	return &c.SensorInformationDB
 }
 
 // GetLogDB настройки для БД обеспечивающей логирование данных

@@ -2,10 +2,10 @@ package confighandler
 
 // ConfigApp конфигурационные настройки приложения
 type ConfigApp struct {
-	Common  CfgCommon
-	NATS    CfgNats
-	LogDB   CfgWriteLogDB
-	GeoIPDB CfgGeoIPDB
+	Common              CfgCommon
+	NATS                CfgNats
+	LogDB               CfgWriteLogDB
+	SensorInformationDB CfgSensorInformationDB
 }
 
 // CfgCommon общие настройки
@@ -71,10 +71,13 @@ type CfgWriteLogDB struct {
 	Port          int    `validate:"gt=0,lte=65535" yaml:"port"`
 }
 
-// CfgGeoIPDB настройки взаимодействия с БД GeoIP
-type CfgGeoIPDB struct {
+// CfgSensorInformationDB настройки подключения к БД с информацией о сенсорах
+type CfgSensorInformationDB struct {
+	User           string `yaml:"user"`
+	Passwd         string
+	NCIRCCURL      string `yaml:"ncircc_url"`
+	NCIRCCToken    string
 	Host           string `yaml:"host"`
-	Path           string `yaml:"path"`
 	Port           int    `validate:"gt=0,lte=65535" yaml:"port"`
 	RequestTimeout int    `validate:"gt=1,lt=13" yaml:"request_timeout"`
 }

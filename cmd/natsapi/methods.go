@@ -3,7 +3,7 @@ package natsapi
 import (
 	"errors"
 
-	"github.com/av-belyakov/enricher_geoip/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
 )
 
 // GetChToModule канал для передачи данных в модуль
