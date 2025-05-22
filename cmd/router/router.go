@@ -6,35 +6,35 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/av-belyakov/enricher_geoip/cmd/geoipapi"
-	"github.com/av-belyakov/enricher_geoip/cmd/natsapi"
-	"github.com/av-belyakov/enricher_geoip/interfaces"
-	"github.com/av-belyakov/enricher_geoip/internal/requests"
-	"github.com/av-belyakov/enricher_geoip/internal/responses"
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/sensorinformationapi"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/requests"
+	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 type Router struct {
-	counter       interfaces.Counter
-	logger        interfaces.Logger
-	geoIpClient   *geoipapi.GeoIpClient
-	chFromNatsApi <-chan interfaces.Requester
-	chToNatsApi   chan<- interfaces.Responser
+	counter          interfaces.Counter
+	logger           interfaces.Logger
+	sensorInfoClient *sensorinformationapi.SensorInformationClient
+	chFromNatsApi    <-chan interfaces.Requester
+	chToNatsApi      chan<- interfaces.Responser
 }
 
 func NewRouter(
 	counter interfaces.Counter,
 	logger interfaces.Logger,
-	geoIpClient *geoipapi.GeoIpClient,
+	sensorInfoClient *sensorinformationapi.SensorInformationClient,
 	chFromNatsApi <-chan interfaces.Requester,
 	chToNatsApi chan<- interfaces.Responser,
 ) *Router {
 	return &Router{
-		geoIpClient:   geoIpClient,
-		counter:       counter,
-		logger:        logger,
-		chFromNatsApi: chFromNatsApi,
-		chToNatsApi:   chToNatsApi,
+		sensorInfoClient: sensorInfoClient,
+		counter:          counter,
+		logger:           logger,
+		chFromNatsApi:    chFromNatsApi,
+		chToNatsApi:      chToNatsApi,
 	}
 }
 
