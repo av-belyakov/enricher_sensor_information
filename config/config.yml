@@ -49,21 +49,21 @@ ZABBIX:
   eventTypes:
     # для отслеживания ошибок
     - eventType: error
-      zabbixKey: enricher_geoip.error
+      zabbixKey: enricher_sensor_info.error
       isTransmit: true
       handshake:
         timeInterval: 0
         message:
     # для информационных сообщений о выполненной работе
     - eventType: info
-      zabbixKey: enricher_geoip.info
+      zabbixKey: enricher_sensor_info.info
       isTransmit: true
       handshake:
         timeInterval: 0
         message: "I'm still alive"
     # для регулярного отстукивания что модуль еще работает
     - eventType: handshake
-      zabbixKey: enricher_geoip.handshake
+      zabbixKey: enricher_sensor_info.handshake
       isTransmit: true
       handshake:
         timeInterval: 1
