@@ -1,0 +1,17 @@
+NATS:
+  host: nats.cloud.gcm
+  port: 4222
+  cache_ttl: 3600
+  subscription: object.sensor-info-request
+SensorInformationDataBase:
+  host: 192.168.9.45
+  port:
+  user: Cherry
+  ncircc_url: https://10.0.227.10/api/v2/companies
+  request_timeout: 7
+WriteLogDataBase:
+  host: datahook.cloud.gcm
+  port: 9200
+  user: log_writer
+  namedb:
+  storage_name_db: enricher_geoip
