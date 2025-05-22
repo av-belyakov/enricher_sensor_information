@@ -1,6 +1,6 @@
 package logginghandler
 
-import "github.com/av-belyakov/enricher_geoip/interfaces"
+import "github.com/av-belyakov/enricher_sensor_information/interfaces"
 
 type LoggingChan struct {
 	dataWriter           interfaces.WriterLoggingData

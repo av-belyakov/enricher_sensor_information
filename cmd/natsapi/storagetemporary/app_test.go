@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/av-belyakov/enricher_geoip/cmd/natsapi/storagetemporary"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi/storagetemporary"
 	"github.com/nats-io/nats.go"
 	"github.com/stretchr/testify/assert"
 )
