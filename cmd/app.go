@@ -7,6 +7,8 @@ import (
 
 	"github.com/av-belyakov/enricher_sensor_information/cmd/elasticsearchapi"
 	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/router"
+	"github.com/av-belyakov/enricher_sensor_information/cmd/sensorinformationapi"
 	"github.com/av-belyakov/enricher_sensor_information/cmd/wrappers"
 	"github.com/av-belyakov/enricher_sensor_information/constants"
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
@@ -122,4 +124,30 @@ func app(ctx context.Context) {
 
 		log.Fatal(err)
 	}
+
+	// ***************************************************************
+	// ************ инициализация модуля поиска информации ***********
+	confSIDB := conf.GetSensorInformationDB()
+	sensorInformationClient, err := sensorinformationapi.New(
+		sensorinformationapi.WithHost(confSIDB.Host),
+		sensorinformationapi.WithPort(confSIDB.Port),
+		sensorinformationapi.WithUser(confSIDB.User),
+		sensorinformationapi.WithPasswd(confSIDB.Passwd),
+		sensorinformationapi.WithNCIRCCURL(confSIDB.NCIRCCURL),
+		sensorinformationapi.WithNCIRCCToken(confSIDB.NCIRCCToken),
+		sensorinformationapi.WithRequestTimeout(confSIDB.RequestTimeout))
+	if err != nil {
+		_ = simpleLogger.Write("error", supportingfunctions.CustomError(err).Error())
+
+		log.Fatal(err)
+	}
+
+	router := router.NewRouter(counting, logging, sensorInformationClient, apiNats.GetChFromModule(), apiNats.GetChToModule())
+	router.Start(ctx)
+
+	//информационное сообщение
+	msg := getInformationMessage()
+	_ = simpleLogger.Write("info", msg)
+
+	<-ctx.Done()
 }

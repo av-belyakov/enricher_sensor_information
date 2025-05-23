@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/av-belyakov/enricher_geoip/interfaces"
-	"github.com/av-belyakov/enricher_geoip/internal/informationcountingstorage"
-	"github.com/av-belyakov/enricher_geoip/internal/supportingfunctions"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/informationcountingstorage"
+	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // New конструктор счетчика сообщений

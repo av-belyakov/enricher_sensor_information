@@ -1,8 +1,8 @@
 package countermessage
 
 import (
-	"github.com/av-belyakov/enricher_geoip/interfaces"
-	"github.com/av-belyakov/enricher_geoip/internal/informationcountingstorage"
+	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/informationcountingstorage"
 )
 
 // CounterMessage счетчик сообщений

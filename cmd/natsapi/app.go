@@ -46,7 +46,7 @@ func New(counter interfaces.Counter, logger interfaces.Logger, opts ...NatsApiOp
 func (api *apiNatsModule) Start(ctx context.Context) error {
 	storage, err := storagetemporary.New(
 		ctx,
-		storagetemporary.WithCacheTTL(300),
+		storagetemporary.WithCacheTTL(600),
 		storagetemporary.WithCacheTimeTick(10),
 	)
 	if err != nil {
