@@ -44,11 +44,11 @@ func (o *ObjectToNats) SetId(v string) {
 	o.Id = v
 }
 
-func (o *ObjectToNats) GetData() any {
+func (o *ObjectToNats) GetData() []byte {
 	return o.Data
 }
 
-func (o *ObjectToNats) SetData(v any) {
+func (o *ObjectToNats) SetData(v []byte) {
 	o.Data = v
 }
 

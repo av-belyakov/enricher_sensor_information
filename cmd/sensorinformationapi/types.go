@@ -1,20 +1,22 @@
 package sensorinformationapi
 
+import "github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
+
 // SensorInformationClient клиент для взаимодействия с API
 type SensorInformationClient struct {
-	Settings SensorInformationSettings
-	ChInput  chan any
+	zabbixConn *zabbixinteractions.ZabbixConnectionJsonRPC
+	settings   SensorInformationSettings
 }
 
 // SensorInformationSettings настройки модуля
 type SensorInformationSettings struct {
-	Host           string
-	User           string
-	Passwd         string
-	NCIRCCURL      string
-	NCIRCCToken    string
-	Port           int
-	RequestTimeout int
+	host           string
+	user           string
+	passwd         string
+	ncirccURL      string
+	ncirccToken    string
+	port           int
+	requestTimeout int
 }
 
 // sensorInformationClientOptions функциональные параметры

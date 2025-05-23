@@ -39,7 +39,7 @@ type ObjectFromNats struct {
 
 // ObjectToNats объект для передачи данных
 type ObjectToNats struct {
-	Data   any
+	Data   []byte
 	Error  error
 	Id     string
 	TaskId string

@@ -35,8 +35,8 @@ type Requester interface {
 
 type Responser interface {
 	CommonTransmitter
-	GetData() any
-	SetData(any)
+	GetData() []byte
+	SetData([]byte)
 	GetTaskId() string
 	SetTaskId(string)
 	GetSource() string

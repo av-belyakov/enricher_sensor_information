@@ -3,7 +3,6 @@ package natsapi
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -52,17 +51,10 @@ func (api *apiNatsModule) incomingInformationHandler(ctx context.Context) {
 				errMsg = incomingData.GetError().Error()
 			}
 
-			incData, ok := incomingData.GetData().([]responses.DetailedInformation)
-			if !ok {
-				api.logger.Send("error", supportingfunctions.CustomError(errors.New("data conversion error")).Error())
-
-				continue
-			}
-
 			response, err := json.Marshal(responses.Response{
 				Source:           incomingData.GetSource(),
 				TaskId:           incomingData.GetTaskId(),
-				FoundInformation: incData,
+				FoundInformation: incomingData.GetData(),
 				Error:            errMsg,
 			})
 			if err != nil {
@@ -71,7 +63,6 @@ func (api *apiNatsModule) incomingInformationHandler(ctx context.Context) {
 
 			m.Respond(response)
 			api.storage.DelReq(incomingData.GetId())
-
 		}
 	}
 }

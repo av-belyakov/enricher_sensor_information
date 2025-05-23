@@ -73,13 +73,14 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 	response.TaskId = req.TaskId
 	response.Source = req.Source
 
-	r.logger.Send("info", fmt.Sprintf("we are starting to process task Id '%s', which came from source '%s' and contains a request %v", req.TaskId, req.Source, req.ListIp))
+	r.logger.Send("info", fmt.Sprintf("we are starting to process task Id '%s', which came from source '%s' and contains a request %v", req.TaskId, req.Source, req.ListSensor))
 
-	results := make([]responses.DetailedInformation, 0, len(req.ListIp))
-	for _, ip := range req.ListIp {
-		result := responses.DetailedInformation{IpAddr: ip}
+	results := make([]responses.DetailedInformation, 0, len(req.ListSensor))
+	for _, sensor := range req.ListSensor {
+		result := responses.DetailedInformation{SensorId: sensor}
 
-		res, err := r.geoIpClient.GetGeoInformation(ctx, ip)
+		//поиск подробной информации о сенсоре
+		res, err := r.sensorInfoClient.SearchSensorInfo(ctx, sensor)
 		if err != nil {
 			result.Error = "error interacting with a remote database"
 			results = append(results, result)
@@ -88,22 +89,17 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 			continue
 		}
 
-		var geoIPRes responses.ResponseGeoIPDataBase
-		if err = json.Unmarshal(res, &geoIPRes); err != nil {
-			result.Error = "a json object in an incorrect format was received from the geoip database"
-			results = append(results, result)
-			r.logger.Send("error", supportingfunctions.CustomError(err).Error())
-
-			continue
-		}
-
-		geoIpInfo, _ := supportingfunctions.GetGeoIPInfo(geoIPRes)
-		geoIpInfo.IpAddr = ip
-
-		results = append(results, geoIpInfo)
+		results = append(results, res)
 	}
 
-	response.Data = results
+	byteData, err := json.Marshal(results)
+	if err != nil {
+		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
+
+		return
+	}
+
+	response.Data = byteData
 
 	r.counter.SendMessage("update processed events", 1)
 	r.logger.Send("info", fmt.Sprintf("the request for taskId '%s' from source '%s' has been processed", req.TaskId, req.Source))
