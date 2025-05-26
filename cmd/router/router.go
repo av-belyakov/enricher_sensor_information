@@ -7,34 +7,22 @@ import (
 	"fmt"
 
 	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
-	"github.com/av-belyakov/enricher_sensor_information/cmd/sensorinformationapi"
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
 	"github.com/av-belyakov/enricher_sensor_information/internal/requests"
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
-type Router struct {
-	counter          interfaces.Counter
-	logger           interfaces.Logger
-	sensorInfoClient *sensorinformationapi.SensorInformationClient
-	chFromNatsApi    <-chan interfaces.Requester
-	chToNatsApi      chan<- interfaces.Responser
-}
-
 func NewRouter(
 	counter interfaces.Counter,
 	logger interfaces.Logger,
-	sensorInfoClient *sensorinformationapi.SensorInformationClient,
-	chFromNatsApi <-chan interfaces.Requester,
-	chToNatsApi chan<- interfaces.Responser,
-) *Router {
+	settings RouterSettings) *Router {
 	return &Router{
-		sensorInfoClient: sensorInfoClient,
-		counter:          counter,
-		logger:           logger,
-		chFromNatsApi:    chFromNatsApi,
-		chToNatsApi:      chToNatsApi,
+		counter:       counter,
+		logger:        logger,
+		commonInfo:    settings.SearchCommonInfo,
+		chFromNatsApi: settings.ChanFromNatsApi,
+		chToNatsApi:   settings.ChanToNatsApi,
 	}
 }
 
@@ -77,18 +65,14 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 
 	results := make([]responses.DetailedInformation, 0, len(req.ListSensor))
 	for _, sensor := range req.ListSensor {
-		result := responses.DetailedInformation{SensorId: sensor}
-
 		//поиск подробной информации о сенсоре
-		res, err := r.sensorInfoClient.SearchSensorInfo(ctx, sensor)
+		res, err := r.commonInfo.Search(ctx, sensor)
 		if err != nil {
-			result.Error = "error interacting with a remote database"
-			results = append(results, result)
+			res.Error = "error interacting with a remote database"
 			r.logger.Send("error", supportingfunctions.CustomError(err).Error())
-
-			continue
 		}
 
+		res.SensorId = sensor
 		results = append(results, res)
 	}
 

@@ -1,5 +1,11 @@
 package interfaces
 
+import (
+	"context"
+
+	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
+)
+
 //**************** счётчик *****************
 
 type Counter interface {
@@ -48,4 +54,10 @@ type Responser interface {
 type CommonTransmitter interface {
 	GetId() string
 	SetId(string)
+}
+
+//********** поиск информации ***********
+
+type Searcher interface {
+	Search(context.Context, string) (responses.DetailedInformation, error)
 }

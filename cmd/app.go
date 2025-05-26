@@ -142,7 +142,13 @@ func app(ctx context.Context) {
 		log.Fatal(err)
 	}
 
-	router := router.NewRouter(counting, logging, sensorInformationClient, apiNats.GetChFromModule(), apiNats.GetChToModule())
+	router := router.NewRouter(
+		counting,
+		logging,
+		router.RouterSettings{
+			SearchCommonInfo: sensorInformationClient,
+			ChanFromNatsApi:  apiNats.GetChFromModule(),
+			ChanToNatsApi:    apiNats.GetChToModule()})
 	router.Start(ctx)
 
 	//информационное сообщение

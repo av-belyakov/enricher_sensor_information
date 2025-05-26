@@ -29,38 +29,38 @@ func GetFullSensorInformation(ctx context.Context, sensorId string, zc *ZabbixCo
 		}
 	}
 
-	//получаем специальный код сенсора, вся информация в Zabbix хранится именно с ним
+	//специальный код сенсора, вся информация в Zabbix хранится именно с ним
 	fullInfo.SpecialSensorId = sensorInfo.GetSpecialId()
 
-	//получаем географический код
+	//географический код объекта
 	geoCode, err := sensorInfo.GetGeoCode(ctx)
 	if err != nil {
 		return fullInfo, err
 	}
 	fullInfo.GeoCode = geoCode
 
-	//получаем сферу деятельности объекта
+	//сфера деятельности объекта
 	objectArea, err := sensorInfo.GetObjectArea(ctx)
 	if err != nil {
 		return fullInfo, err
 	}
 	fullInfo.ObjectArea = objectArea
 
-	//получаем наименование субъекта Российской Федерации
+	//наименование субъекта Российской Федерации
 	subjectRF, err := sensorInfo.GetSubjectRF(ctx)
 	if err != nil {
 		return fullInfo, err
 	}
 	fullInfo.SubjectRussianFederation = subjectRF
 
-	//получаем индивидуальный налоговый идентификатор
+	//индивидуальный налоговый идентификатор
 	inn, err := sensorInfo.GetINN(ctx)
 	if err != nil {
 		return fullInfo, err
 	}
 	fullInfo.INN = inn
 
-	//получаем перечень домашних сетей контролируемого объекта
+	//перечень домашних сетей контролируемого объекта
 	homeNet, err := sensorInfo.GetHomeNet(ctx)
 	if err != nil {
 		return fullInfo, err

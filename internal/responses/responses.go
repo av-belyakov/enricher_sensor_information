@@ -15,7 +15,7 @@ type DetailedInformation struct {
 	SensorId                 string `json:"sensor_id"`                  //идентификатор сенсора
 	ObjectArea               string `json:"object_area"`                //сфера деятельности объекта
 	FullOrgName              string `json:"full_organization_name"`     //полное наименование организации
-	SpecialSensorId          string `json:"special_sensor_id"`          //идентификатор сенсора, специальный, для поиска информации в НКЦКИ
+	SpecialSensorId          string `json:"special_sensor_id"`          //специальный идентификатор сенсора, нужен для поиска информации в Zabbix
 	SubjectRussianFederation string `json:"subject_russian_federation"` //субъект Российской Федерации
 	Error                    string `json:"error"`
 }
