@@ -39,8 +39,6 @@ func TestMain(t *testing.M) {
 }
 
 func TestGetZabbixInfo(t *testing.T) {
-	t.Log("---- zc", zc)
-
 	t.Run("Тест 1. Авторизация", func(t *testing.T) {
 		assert.NoError(t, zc.Authorization(t.Context()))
 	})

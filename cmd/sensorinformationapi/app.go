@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
@@ -22,7 +23,8 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 		}
 	}
 
-	conn, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
+	//инициализация соединения с Zabbix
+	zConn, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
 		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
 			Host:              api.settings.host,
 			Login:             api.settings.user,
@@ -32,13 +34,47 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	if err != nil {
 		return api, err
 	}
+	api.zabbixConn = zConn
 
-	api.zabbixConn = conn
+	//инициализация соединения с НКЦКИ
+	ncirccConn, err := ncirccinteractions.NewClient(
+		api.settings.ncirccURL,
+		api.settings.ncirccToken,
+		time.Duration(api.settings.requestTimeout)*time.Second,
+	)
+	if err != nil {
+		return api, err
+	}
+	api.ncirccConn = ncirccConn
 
 	return api, nil
 }
 
-// SearchSensorInfo поиск информации о сенсоре
-func (api *SensorInformationClient) SearchSensorInfo(ctx context.Context, sensorId string) (responses.DetailedInformation, error) {
-	return zabbixinteractions.GetFullSensorInfo(ctx, sensorId, api.zabbixConn)
+// Search поиск информации о сенсоре
+func (api *SensorInformationClient) Search(ctx context.Context, sensorId string) (responses.DetailedInformation, error) {
+	//авторизуемся в Zabbix
+	api.zabbixConn.Authorization(ctx)
+
+	//поиск основной информации по сенсору в Zabbix
+	commonInfo, err := zabbixinteractions.GetFullSensorInformation(ctx, sensorId, api.zabbixConn)
+	if err != nil {
+		return commonInfo, err
+	}
+
+	commonInfo.SensorId = sensorId
+
+	//поиск подробной информации об организации по её ИНН
+	innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, sensorId)
+	if err != nil {
+		return commonInfo, err
+	}
+
+	if innInfo.Count == 0 {
+		return commonInfo, err
+	}
+
+	commonInfo.OrgName = innInfo.Data[0].Name
+	commonInfo.FullOrgName = innInfo.Data[0].Sname
+
+	return commonInfo, err
 }

@@ -8,7 +8,7 @@ SensorInformationDataBase:
   port:
   user: Cherry
   ncircc_url: https://10.0.227.10/api/v2/companies
-  request_timeout: 7
+  request_timeout: 15
 WriteLogDataBase:
   host: datahook.cloud.gcm
   port: 9200

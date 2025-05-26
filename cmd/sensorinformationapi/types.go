@@ -1,9 +1,13 @@
 package sensorinformationapi
 
-import "github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
+import (
+	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
+)
 
 // SensorInformationClient клиент для взаимодействия с API
 type SensorInformationClient struct {
+	ncirccConn *ncirccinteractions.ClientNICRCC
 	zabbixConn *zabbixinteractions.ZabbixConnectionJsonRPC
 	settings   SensorInformationSettings
 }
