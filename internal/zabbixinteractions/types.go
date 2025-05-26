@@ -95,7 +95,7 @@ type RequiestSensorInfo struct {
 	specialId        string
 }
 
-type responseData struct {
+type ResponseData struct {
 	Result []map[string]interface{} `json:"result"`
 	Error  map[string]interface{}   `json:"error"`
 }
