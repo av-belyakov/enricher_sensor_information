@@ -5,7 +5,6 @@ NATS:
   subscription: object.sensor-info-request
 SensorInformationDataBase:
   host: 192.168.9.45
-  port:
   user: Cherry
   ncircc_url: https://10.0.227.10/api/v2/companies
   request_timeout: 15

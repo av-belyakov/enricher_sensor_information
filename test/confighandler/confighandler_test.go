@@ -29,7 +29,6 @@ func TestMain(m *testing.M) {
 
 	//Подключение к БД с информацией о сенсорах
 	os.Unsetenv("GO_ENRICHERSENSORINFO_SIHOST")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SIPORT")
 	os.Unsetenv("GO_ENRICHERSENSORINFO_SIUSER")
 	os.Unsetenv("GO_ENRICHERSENSORINFO_SIPASSWD")
 	os.Unsetenv("GO_ENRICHERSENSORINFO_SIRTIMEOUT")
@@ -70,7 +69,6 @@ func TestConfigHandler(t *testing.T) {
 
 		t.Run("Тест 2. Проверка настройки SensorInformationDataBase из файла config_dev.yml", func(t *testing.T) {
 			assert.Equal(t, conf.GetSensorInformationDB().Host, "192.168.9.45")
-			assert.Equal(t, conf.GetSensorInformationDB().Port, 13013)
 			assert.Equal(t, conf.GetSensorInformationDB().User, "Cherry")
 			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, "https://10.0.227.10/api/v2/companies")
 			assert.Equal(t, conf.GetSensorInformationDB().RequestTimeout, 7)
@@ -104,7 +102,6 @@ func TestConfigHandler(t *testing.T) {
 
 		t.Run("Тест 2. Проверка настройки GeoIPDataBase", func(t *testing.T) {
 			os.Setenv("GO_ENRICHERSENSORINFO_SIHOST", "127.0.0.1")
-			os.Setenv("GO_ENRICHERSENSORINFO_SIPORT", "13813")
 			os.Setenv("GO_ENRICHERSENSORINFO_SIUSER", "CherryTiggo")
 			os.Setenv("GO_ENRICHERSENSORINFO_SIPASSWD", "SomE_oLd_pasSw")
 			os.Setenv("GO_ENRICHERSENSORINFO_SIRTIMEOUT", "10")
@@ -114,7 +111,6 @@ func TestConfigHandler(t *testing.T) {
 			assert.NoError(t, err)
 
 			assert.Equal(t, conf.GetSensorInformationDB().Host, "127.0.0.1")
-			assert.Equal(t, conf.GetSensorInformationDB().Port, 13813)
 			assert.Equal(t, conf.GetSensorInformationDB().User, "CherryTiggo")
 			assert.Equal(t, conf.GetSensorInformationDB().Passwd, "SomE_oLd_pasSw")
 			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, "https://example.io/api/v2/companies")

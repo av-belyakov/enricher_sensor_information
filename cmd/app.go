@@ -130,7 +130,6 @@ func app(ctx context.Context) {
 	confSIDB := conf.GetSensorInformationDB()
 	sensorInformationClient, err := sensorinformationapi.New(
 		sensorinformationapi.WithHost(confSIDB.Host),
-		sensorinformationapi.WithPort(confSIDB.Port),
 		sensorinformationapi.WithUser(confSIDB.User),
 		sensorinformationapi.WithPasswd(confSIDB.Passwd),
 		sensorinformationapi.WithNCIRCCURL(confSIDB.NCIRCCURL),

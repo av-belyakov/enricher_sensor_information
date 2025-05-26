@@ -35,7 +35,6 @@
 #### Переменные окружения отвечающие за подключение к БД с информацией о сенсорах
 
 - GO_ENRICHERSENSORINFO_SIHOST - ip или доменное имя;
-- GO_ENRICHERSENSORINFO_SIPORT - сетевой порт;
 - GO_ENRICHERSENSORINFO_SIUSER - имя пользователя
 - GO_ENRICHERSENSORINFO_SIPASSWD - пароль пользователя
 - GO_ENRICHERSENSORINFO_SIRTIMEOUT - время ожидания выполнения запроса

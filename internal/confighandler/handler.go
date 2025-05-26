@@ -30,7 +30,6 @@ func New(rootDir string) (*ConfigApp, error) {
 
 			//Подключение к БД с информацией о сенсорах
 			"GO_ENRICHERSENSORINFO_SIHOST":        "",
-			"GO_ENRICHERSENSORINFO_SIPORT":        "",
 			"GO_ENRICHERSENSORINFO_SIUSER":        "",
 			"GO_ENRICHERSENSORINFO_SIPASSWD":      "",
 			"GO_ENRICHERSENSORINFO_SIRTIMEOUT":    "",
@@ -119,9 +118,6 @@ func New(rootDir string) (*ConfigApp, error) {
 		// Настройки доступа к БД GeoIP
 		if viper.IsSet("SensorInformationDataBase.host") {
 			conf.SensorInformationDB.Host = viper.GetString("SensorInformationDataBase.host")
-		}
-		if viper.IsSet("SensorInformationDataBase.port") {
-			conf.SensorInformationDB.Port = viper.GetInt("SensorInformationDataBase.port")
 		}
 		if viper.IsSet("SensorInformationDataBase.user") {
 			conf.SensorInformationDB.User = viper.GetString("SensorInformationDataBase.user")
@@ -220,11 +216,6 @@ func New(rootDir string) (*ConfigApp, error) {
 	//Подключение к БД с информацией о сенсорах
 	if envList["GO_ENRICHERSENSORINFO_SIHOST"] != "" {
 		conf.SensorInformationDB.Host = envList["GO_ENRICHERSENSORINFO_SIHOST"]
-	}
-	if envList["GO_ENRICHERSENSORINFO_SIPORT"] != "" {
-		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_SIPORT"]); err == nil {
-			conf.SensorInformationDB.Port = p
-		}
 	}
 	if envList["GO_ENRICHERSENSORINFO_SIUSER"] != "" {
 		conf.SensorInformationDB.User = envList["GO_ENRICHERSENSORINFO_SIUSER"]
