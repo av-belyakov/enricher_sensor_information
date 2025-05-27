@@ -90,9 +90,9 @@ func TestGetSensorCommonInfo(t *testing.T) {
 
 	//запрос информации через NATS
 	msg, err := nc.RequestWithContext(t.Context(), SUBSCRIPTION, []byte(`{
-			"source": "test_source",
+			"source": "source for testing",
 	  		"task_id": "41af7c2b34",
-	   		"list_sensors": ["8030073", "8030016", "8030017"]
+	   		"list_sensors": ["8030073", "8030141", "8030017"]
 		}`))
 
 	assert.NotNil(t, msg)
