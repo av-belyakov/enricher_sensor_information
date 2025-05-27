@@ -31,17 +31,8 @@ type apiNatsSettings struct {
 // NatsApiOptions функциональные опции
 type NatsApiOptions func(*apiNatsModule) error
 
-// ObjectFromNats объект для передачи данных
-type ObjectFromNats struct {
+// ObjectBeingTransferred объект для передачи данных
+type ObjectBeingTransferred struct {
 	Data []byte
 	Id   string
-}
-
-// ObjectToNats объект для передачи данных
-type ObjectToNats struct {
-	Data   []byte
-	Error  error
-	Id     string
-	TaskId string
-	Source string
 }

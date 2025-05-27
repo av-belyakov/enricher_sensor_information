@@ -2,6 +2,7 @@ package sensorinformationapi
 
 import (
 	"context"
+	"regexp"
 	"time"
 
 	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
@@ -63,18 +64,25 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorId string)
 
 	commonInfo.SensorId = sensorId
 
-	//поиск подробной информации об организации по её ИНН
-	innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, sensorId)
+	reg, err := regexp.Compile(`^[0-9]+$`)
 	if err != nil {
 		return commonInfo, err
 	}
 
-	if innInfo.Count == 0 {
-		return commonInfo, err
-	}
+	//поиск подробной информации об организации по её ИНН
+	if reg.MatchString(commonInfo.INN) {
+		innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, commonInfo.INN)
+		if err != nil {
+			return commonInfo, err
+		}
 
-	commonInfo.OrgName = innInfo.Data[0].Name
-	commonInfo.FullOrgName = innInfo.Data[0].Sname
+		if innInfo.Count == 0 {
+			return commonInfo, err
+		}
+
+		commonInfo.OrgName = innInfo.Data[0].Name
+		commonInfo.FullOrgName = innInfo.Data[0].Sname
+	}
 
 	return commonInfo, err
 }

@@ -76,7 +76,7 @@ func (api *ClientNICRCC) GetFullNameOrganizationByINN(ctx context.Context, inn s
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return resData, supportingfunctions.CustomError(fmt.Errorf("error sending the request, response status is %s", res.Status))
+		return resData, supportingfunctions.CustomError(fmt.Errorf("error sending the request INN '%s', response status is %s", inn, res.Status))
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&resData); err != nil {

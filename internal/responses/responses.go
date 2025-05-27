@@ -1,10 +1,10 @@
 package responses
 
 type Response struct {
-	FoundInformation []byte `json:"found_information"`
-	TaskId           string `json:"task_id"`
-	Source           string `json:"source"`
-	Error            string `json:"error"`
+	FoundInformation []DetailedInformation `json:"found_information"`
+	TaskId           string                `json:"task_id"`
+	Source           string                `json:"source"`
+	Error            string                `json:"error"`
 }
 
 type DetailedInformation struct {
