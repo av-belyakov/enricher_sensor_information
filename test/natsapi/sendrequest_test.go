@@ -92,7 +92,7 @@ func TestGetSensorCommonInfo(t *testing.T) {
 	msg, err := nc.RequestWithContext(t.Context(), SUBSCRIPTION, []byte(`{
 			"source": "test_source",
 	  		"task_id": "41af7c2b34",
-	   		"list_sensors": ["8030066", "8030002", "8030017"]
+	   		"list_sensors": ["8030073", "8030016", "8030017"]
 		}`))
 
 	assert.NotNil(t, msg)
@@ -104,7 +104,10 @@ func TestGetSensorCommonInfo(t *testing.T) {
 		assert.Empty(t, res.Error)
 	}
 	// обработка ответа
-	t.Logf("Response:\n%+v\n", res)
+	t.Log("Response:")
+	for k, v := range res.Information {
+		t.Logf("%d. %s\n", k, v)
+	}
 
 	t.Cleanup(func() {
 		nc.Close()
