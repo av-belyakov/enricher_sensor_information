@@ -2,13 +2,11 @@ package natsapi
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 
-	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
@@ -18,7 +16,7 @@ func (api *apiNatsModule) subscriptionRequestHandler() {
 		id := uuid.NewString()
 
 		api.storage.SetReq(id, m)
-		api.chFromModule <- &ObjectFromNats{
+		api.chFromModule <- &ObjectBeingTransferred{
 			Id:   id,
 			Data: m.Data,
 		}
@@ -46,22 +44,7 @@ func (api *apiNatsModule) incomingInformationHandler(ctx context.Context) {
 				continue
 			}
 
-			var errMsg string
-			if incomingData.GetError() != nil {
-				errMsg = incomingData.GetError().Error()
-			}
-
-			response, err := json.Marshal(responses.Response{
-				Source:           incomingData.GetSource(),
-				TaskId:           incomingData.GetTaskId(),
-				FoundInformation: incomingData.GetData(),
-				Error:            errMsg,
-			})
-			if err != nil {
-				api.logger.Send("error", supportingfunctions.CustomError(err).Error())
-			}
-
-			m.Respond(response)
+			m.Respond(incomingData.GetData())
 			api.storage.DelReq(incomingData.GetId())
 		}
 	}

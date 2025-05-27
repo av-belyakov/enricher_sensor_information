@@ -43,12 +43,6 @@ type Responser interface {
 	CommonTransmitter
 	GetData() []byte
 	SetData([]byte)
-	GetTaskId() string
-	SetTaskId(string)
-	GetSource() string
-	SetSource(string)
-	GetError() error
-	SetError(error)
 }
 
 type CommonTransmitter interface {

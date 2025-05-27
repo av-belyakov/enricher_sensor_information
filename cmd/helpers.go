@@ -18,7 +18,7 @@ func getInformationMessage() string {
 	}
 
 	appStatus := fmt.Sprintf("%vproduction%v", constants.Ansi_Bright_Blue, constants.Ansi_Reset)
-	envValue, ok := os.LookupEnv("GO_ENRICHERGEOIP_MAIN")
+	envValue, ok := os.LookupEnv("GO_ENRICHERSENSORINFO_MAIN")
 	if ok && (envValue == "development") {
 		appStatus = fmt.Sprintf("%v%s%v", constants.Ansi_Bright_Red, envValue, constants.Ansi_Reset)
 	}

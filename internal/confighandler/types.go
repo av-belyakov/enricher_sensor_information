@@ -78,5 +78,5 @@ type CfgSensorInformationDB struct {
 	NCIRCCURL      string `yaml:"ncircc_url"`
 	NCIRCCToken    string
 	Host           string `yaml:"host"`
-	RequestTimeout int    `validate:"gt=1,lt=13" yaml:"request_timeout"`
+	RequestTimeout int    `validate:"gt=1,lt=45" yaml:"request_timeout"`
 }

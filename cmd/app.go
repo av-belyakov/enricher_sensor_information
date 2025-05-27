@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/av-belyakov/simplelogger"
+
 	"github.com/av-belyakov/enricher_sensor_information/cmd/elasticsearchapi"
 	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
 	"github.com/av-belyakov/enricher_sensor_information/cmd/router"
@@ -16,7 +18,6 @@ import (
 	"github.com/av-belyakov/enricher_sensor_information/internal/countermessage"
 	"github.com/av-belyakov/enricher_sensor_information/internal/logginghandler"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
-	"github.com/av-belyakov/simplelogger"
 )
 
 func app(ctx context.Context) {
