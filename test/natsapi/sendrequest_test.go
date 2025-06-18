@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/goforj/godump"
 	"github.com/nats-io/nats.go"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,7 +17,7 @@ const (
 	NATS_PORT = 4222
 
 	CACHETTL     = 360
-	SUBSCRIPTION = "object.sensor-info-request.test"
+	SUBSCRIPTION = "object.sensorinforeq.test"
 )
 
 type ResponseData struct {
@@ -92,7 +93,7 @@ func TestGetSensorCommonInfo(t *testing.T) {
 	msg, err := nc.RequestWithContext(t.Context(), SUBSCRIPTION, []byte(`{
 			"source": "source for testing",
 	  		"task_id": "41af7c2b34",
-	   		"list_sensors": ["8030073", "8030141", "8030017"]
+	   		"list_sensors": ["8030073", "8030141", "8030017", "310073"]
 		}`))
 
 	assert.NotNil(t, msg)
@@ -105,9 +106,11 @@ func TestGetSensorCommonInfo(t *testing.T) {
 	}
 	// обработка ответа
 	t.Log("Response:")
-	for k, v := range res.Information {
-		t.Logf("%d. %s\n", k, v)
-	}
+	godump.Dump(res.Information)
+
+	//for k, v := range res.Information {
+	//	t.Logf("%d. %s\n", k, v)
+	//}
 
 	t.Cleanup(func() {
 		nc.Close()
