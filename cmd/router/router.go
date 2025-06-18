@@ -11,6 +11,7 @@ import (
 	"github.com/av-belyakov/enricher_sensor_information/internal/requests"
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
+	"github.com/goforj/godump"
 )
 
 func NewRouter(
@@ -81,6 +82,8 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 		//поиск подробной информации о сенсоре
 		res, err := r.commonInfo.Search(ctx, sensor)
 		if err != nil {
+			//fmt.Println("func 'Router.handlerRequest', ERROR:", err)
+
 			res.Error = "error interacting with a remote database"
 			r.logger.Send("error", supportingfunctions.CustomError(err).Error())
 		}
@@ -88,6 +91,10 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 		res.SensorId = sensor
 		results = append(results, res)
 	}
+
+	//fmt.Println("func 'Router.handlerRequest', result:")
+	//godump.Dump(results)
+	r.logger.Send("info", fmt.Sprintf("task Id '%s', result:'%s'", req.TaskId, godump.DumpStr(results)))
 
 	resByte, err := json.Marshal(responses.Response{
 		TaskId:           req.TaskId,

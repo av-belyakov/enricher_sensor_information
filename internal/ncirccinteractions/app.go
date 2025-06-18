@@ -55,7 +55,10 @@ func NewClient(url, token string, connTimeout time.Duration) (*ClientNICRCC, err
 func (api *ClientNICRCC) GetFullNameOrganizationByINN(ctx context.Context, inn string) (Response, error) {
 	resData := Response{}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", api.url, strings.NewReader(""))
+	ctxTimeout, ctxCancel := context.WithTimeout(ctx, 5*time.Second)
+	defer ctxCancel()
+
+	req, err := http.NewRequestWithContext(ctxTimeout, "GET", api.url, strings.NewReader(""))
 	if err != nil {
 		return resData, supportingfunctions.CustomError(err)
 	}
