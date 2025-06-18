@@ -56,6 +56,9 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorId string)
 	//авторизуемся в Zabbix
 	api.zabbixConn.Authorization(ctx)
 
+	//fmt.Println("func 'SensorInformationClient.Search', search sensor with id:", sensorId)
+	//fmt.Println("func 'SensorInformationClient.Search', поиск основной информации по сенсору в Zabbix")
+
 	//поиск основной информации по сенсору в Zabbix
 	commonInfo, err := zabbixinteractions.GetFullSensorInformation(ctx, sensorId, api.zabbixConn)
 	if err != nil {
@@ -69,10 +72,15 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorId string)
 		return commonInfo, err
 	}
 
+	//godump.Dump(commonInfo)
+	//fmt.Println("func 'SensorInformationClient.Search', поиск подробной информации об организации по её ИНН")
+
 	//поиск подробной информации об организации по её ИНН
 	if reg.MatchString(commonInfo.INN) {
 		innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, commonInfo.INN)
 		if err != nil {
+			//fmt.Println("func 'SensorInformationClient.Search', ERROR:", err)
+
 			return commonInfo, err
 		}
 
@@ -83,6 +91,8 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorId string)
 		commonInfo.OrgName = innInfo.Data[0].Name
 		commonInfo.FullOrgName = innInfo.Data[0].Sname
 	}
+
+	//godump.Dump(commonInfo)
 
 	return commonInfo, err
 }
