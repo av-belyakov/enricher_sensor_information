@@ -14,7 +14,7 @@ services:
     command: chmod 777 /opt/enricher_sensor_information/logs && \
              chown 1500:1500 /opt/enricher_sensor_information/logs
     volumes:
-      - /var/log/enricher_sensor_information.prod:/opt/enricher_sensor_information/logs:rw
+      - /var/log/enricher_sensor_information.test:/opt/enricher_sensor_information/logs:rw
       - ./config:/opt/enricher_sensor_information/config:rw
       #выполняем для корректного отображения даты с учетом временной зоны
       - /etc/timezone:/etc/timezone:ro
