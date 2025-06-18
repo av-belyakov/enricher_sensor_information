@@ -69,7 +69,7 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorId string)
 		return commonInfo, err
 	}
 
-	//поиск подробной информации об организации по её ИНН
+	//поиск подробной информации об организации по её ИНН в НКЦКИ
 	if reg.MatchString(commonInfo.INN) {
 		innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, commonInfo.INN)
 		if err != nil {
