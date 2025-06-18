@@ -8,7 +8,7 @@ import (
 )
 
 // New конструктор обработки логов
-// это просто мост соединяющий несколько пакетов логирования,
+// Это просто мост соединяющий несколько пакетов логирования,
 // например, как в данном случае пакет simplyLogger и пакет взаимодействия с Zabbix
 func New(writer interfaces.WriterLoggingData, chSysMonit chan<- interfaces.Messager) *LoggingChan {
 	return &LoggingChan{
