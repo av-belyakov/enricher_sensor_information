@@ -14,6 +14,7 @@ import (
 	"github.com/goforj/godump"
 )
 
+// NewRouter инициализация маршрутизатора
 func NewRouter(
 	counter interfaces.Counter,
 	logger interfaces.Logger,
@@ -27,6 +28,7 @@ func NewRouter(
 	}
 }
 
+// Start
 func (r *Router) Start(ctx context.Context) {
 	go func() {
 		for {
