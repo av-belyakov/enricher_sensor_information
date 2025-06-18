@@ -28,7 +28,7 @@ func getInformationMessage(conf *confighandler.ConfigApp) string {
 
 	fmt.Printf("\n%v%v%s%v\n", constants.Bold_Font, constants.Ansi_Bright_Green, msg, constants.Ansi_Reset)
 	fmt.Printf(
-		"%v%vApplication status is '%s'.%v\n",
+		"%v%vApplication status is '%s'%v\n",
 		constants.Underlining,
 		constants.Ansi_Bright_Green,
 		appStatus,

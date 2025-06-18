@@ -16,8 +16,9 @@ const (
 	NATS_HOST = "192.168.9.208"
 	NATS_PORT = 4222
 
-	CACHETTL     = 360
-	SUBSCRIPTION = "object.sensorinforeq.test"
+	CACHETTL = 360
+	//SUBSCRIPTION = "object.sensorinforeq.test"
+	SUBSCRIPTION = "object.sensor-info-request.test"
 )
 
 type ResponseData struct {
