@@ -105,8 +105,8 @@ func (zc *ZabbixConnectionJsonRPC) PostRequest(ctx context.Context, data *string
 		return []byte{}, supportingfunctions.CustomError(err)
 	}
 
-	req.Header.Add("Authorization", zc.authorizationHash)
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", zc.authorizationHash))
+	req.Header.Set("Content-Type", "application/json-rpc")
 
 	res, err := zc.connClient.Do(req)
 	if err != nil {
