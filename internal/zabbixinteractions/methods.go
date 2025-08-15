@@ -30,9 +30,8 @@ func (sid *RequiestSensorInfo) GetGeoCode(ctx context.Context) (string, error) {
 		"search": {"key_": "geo_code"},
 		"sortfield": "name"
       },
-	  "auth": "%s",
 	  "id": 1
-	}`, sid.specialId, sid.zabbixConnection.GetAuthorizationData()))
+	}`, sid.specialId))
 }
 
 // GetObjectArea сфера деятельности объекта
@@ -46,9 +45,8 @@ func (sid *RequiestSensorInfo) GetObjectArea(ctx context.Context) (string, error
 		"search":{"key_": "object_area"},
 		"sortfield":"name"
 	  },
-	  "auth":"%s",
 	  "id": 1
-	}`, sid.specialId, sid.zabbixConnection.GetAuthorizationData()))
+	}`, sid.specialId))
 }
 
 // GetSubjectRF субъект Российской Федерации
@@ -62,9 +60,8 @@ func (sid *RequiestSensorInfo) GetSubjectRF(ctx context.Context) (string, error)
 	    "search":{"key_":"subject_RF"},
 	    "sortfield":"name"
 	  },
-	  "auth":"%s",
 	  "id":1
-	}`, sid.specialId, sid.zabbixConnection.GetAuthorizationData()))
+	}`, sid.specialId))
 }
 
 // GetINN индивидуальный налоговый идентификатор
@@ -78,9 +75,8 @@ func (sid *RequiestSensorInfo) GetINN(ctx context.Context) (string, error) {
 	    "search":{"key_": "inn"},
 	    "sortfield":"name"
 	  },
-	  "auth":"%s",
 	  "id": 1
-	}`, sid.specialId, sid.zabbixConnection.GetAuthorizationData()))
+	}`, sid.specialId))
 }
 
 // GetHomeNet перечень домашних сетей
@@ -94,9 +90,8 @@ func (sid *RequiestSensorInfo) GetHomeNet(ctx context.Context) (string, error) {
 	    "search":{"key_":"home_net"},
 	    "sortfield":"name"
 	  },
-	  "auth":"%s",
 	  "id":1
-	}`, sid.specialId, sid.zabbixConnection.GetAuthorizationData()))
+	}`, sid.specialId))
 }
 
 // sendRequest передача запроса API
