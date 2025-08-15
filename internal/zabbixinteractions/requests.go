@@ -73,16 +73,14 @@ func GetFullSensorInformation(ctx context.Context, sensorId string, zc *ZabbixCo
 // GetSpecialId объект со специальным id сенсора который нужен для подробных запросов
 func GetSpecialId(ctx context.Context, sensorId string, zc *ZabbixConnectionJsonRPC) (*RequiestSensorInfo, error) {
 	req := RequiestSensorInfo{zabbixConnection: zc}
-
 	strReq := fmt.Sprintf(`{
 	  "jsonrpc":"2.0",
 	  "method":"host.get",
 	  "params":{
 	    "search":{"host":%s}
 	  },
-	  "auth":"%s",
 	  "id":1
-	}`, sensorId, zc.GetAuthorizationData())
+	}`, sensorId)
 
 	if sensorId == "" {
 		return &req, supportingfunctions.CustomError(errors.New("the sensor ID cannot be equal to 0"))

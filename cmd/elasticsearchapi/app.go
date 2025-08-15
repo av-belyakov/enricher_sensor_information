@@ -83,7 +83,7 @@ func (edb *ElasticsearchDB) Write(msgType, msg string) error {
 	}
 
 	if e, ok := r["error"]; ok {
-		return supportingfunctions.CustomError(fmt.Errorf("%s received from module Elsaticsearch: %s", res.Status(), e))
+		return supportingfunctions.CustomError(fmt.Errorf("%s received from module Elasticsearch: %s", res.Status(), e))
 	}
 
 	return nil
