@@ -1,4 +1,7 @@
-# Realme
+# Enricher_sensor_information
+
+[![Go Version](https://img.shields.io/badge/Go-1.24.3+-00ADD8?style=flat&logo=go)](https://golang.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com/)
 
 Сервис 'enricher_sensor_information' принимает запросы клиентов, через брокер сообщений NATS и выполняет поиск информации о сенсоре в разных источниках. Возвращается следующий перечень информации:
 
