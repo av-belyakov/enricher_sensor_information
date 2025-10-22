@@ -28,7 +28,7 @@ func TestMain(t *testing.M) {
 		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
 			ConnectionTimeout: 10 * time.Second,
 			Host:              "192.168.9.45",
-			Login:             "Cherry",
+			Login:             "803.p.vishnitsky@avz-center.ru",
 			Passwd:            os.Getenv("GO_ENRICHERSENSORINFO_SIPASSWD"),
 		})
 	if err != nil {
