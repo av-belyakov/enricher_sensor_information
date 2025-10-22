@@ -42,6 +42,7 @@ stages:
       - config.yml
       - config_dev.yml
       - config_prod.yml
+      - config_test.yml
     when: never
 
 # не выполнять если изменился один из файлов docker-compose.yml или docker-compose.test.yml
@@ -131,6 +132,11 @@ deploy-test:
     - *readme-no-commit
     - *test-files-no-commit
     - *dev-test-commit
+    - if: $CI_COMMIT_BRANCH == $BRANCH_TEST
+      changes:
+        - config_test.yml
+        - config_prod.yml
+      when: never
   before_script:
     - echo "Start deploy enricher_sensor_information application for GCM.test"
   script:
@@ -146,6 +152,11 @@ deploy-prod-gcm:
   rules:
     - *readme-no-commit
     - *test-files-no-commit
+    - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR
+      changes:
+        - config_dev.yml
+        - config_test.yml
+      when: never
     - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_REF_NAME == $BRANCH_MAJOR
       when: manual
       allow_failure: true
