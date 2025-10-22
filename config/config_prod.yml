@@ -5,7 +5,7 @@ NATS:
   subscription: object.sensor-info-request
 SensorInformationDataBase:
   host: 192.168.9.45
-  user: Cherry
+  user: 803.p.vishnitsky@avz-center.ru
   ncircc_url: https://10.0.227.10/api/v2/companies
   request_timeout: 15
 WriteLogDataBase:
