@@ -1,7 +1,7 @@
 NATS:
   host: 192.168.9.208
   port: 4222
-  cache_ttl: 3600
+  cache_ttl: 4800
   subscription: object.sensorinforeq.test
 SensorInformationDataBase:
   host: 192.168.9.45
