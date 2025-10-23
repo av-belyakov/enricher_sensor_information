@@ -39,10 +39,10 @@ stages:
 .change-configs-never-commit: &configs-no-commit
   - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_BRANCH == $BRANCH_TEST
     changes:
-      - config.yml
-      - config_dev.yml
-      - config_prod.yml
-      - config_test.yml
+      - config/config.yml
+      - config/config_dev.yml
+      - config/config_prod.yml
+      - config/config_test.yml
     when: never
 
 # не выполнять если изменился один из файлов docker-compose.yml или docker-compose.test.yml
@@ -133,8 +133,8 @@ deploy-test:
     - *test-files-no-commit
     - if: $CI_COMMIT_BRANCH == $BRANCH_TEST
       changes:
-        - config_test.yml
-        - config_prod.yml
+        - config/config_test.yml
+        - config/config_prod.yml
       when: never
     - if: $CI_COMMIT_BRANCH == $BRANCH_TEST || $CI_COMMIT_REF_NAME == $BRANCH_TEST
       when: manual
@@ -156,8 +156,8 @@ deploy-prod-gcm:
     - *test-files-no-commit
     - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR
       changes:
-        - config_dev.yml
-        - config_test.yml
+        - config/config_dev.yml
+        - config/config_test.yml
       when: never
     - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_REF_NAME == $BRANCH_MAJOR
       when: manual
