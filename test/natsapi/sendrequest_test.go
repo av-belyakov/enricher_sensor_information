@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	//NATS_HOST = "nats.cloud.gcm"
 	NATS_HOST = "192.168.9.208"
 	NATS_PORT = 4222
 
