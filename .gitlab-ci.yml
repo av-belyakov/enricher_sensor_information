@@ -136,7 +136,9 @@ deploy-test:
         - config_test.yml
         - config_prod.yml
       when: never
-    - *dev-test-commit
+    - if: $CI_COMMIT_BRANCH == $BRANCH_TEST || $CI_COMMIT_REF_NAME == $BRANCH_TEST
+      when: manual
+      allow_failure: true
   before_script:
     - echo "Start deploy enricher_sensor_information application for GCM.test"
   script:
