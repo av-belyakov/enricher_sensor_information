@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.4" #такая версия подходит для старых ranner 
 # Что бы передать переменные при запуске docker-compose.yml файда нужно
 # выполнить: 
 # TYPE_IMAGE=lates \
@@ -14,14 +14,14 @@ services:
       - GO_ENRICHERSENSORINFO_SINCIRCCTOKEN=$ESENSORINFO_SINCIRCCTOKEN
     image: gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:$TYPE_IMAGE
     restart: unless-stopped
-    #пробрасываем user ID для корректной записи в логов
+    # пробрасываем user ID для корректной записи в логов
     user: root
     command: chmod 777 /opt/enricher_sensor_information/logs && \
              chown 1500:1500 /opt/enricher_sensor_information/logs
     volumes:
       - /var/log/enricher_sensor_information.$TYPE_EXECUTION:/opt/enricher_sensor_information/logs:rw
       - ./config:/opt/enricher_sensor_information/config:rw
-      #выполняем для корректного отображения даты с учетом временной зоны
+      # выполняем для корректного отображения даты с учетом временной зоны
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     network_mode: "host"
