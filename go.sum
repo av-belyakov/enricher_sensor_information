@@ -2,8 +2,6 @@ github.com/av-belyakov/enricher_geoip v0.0.0-20250521115708-1c9a9aefd69d h1:zzQT
 github.com/av-belyakov/enricher_geoip v0.0.0-20250521115708-1c9a9aefd69d/go.mod h1:ipNGRiMzSVPaCno+Td0Z4t+AKK8Q5siS+gwcCxwsdpc=
 github.com/av-belyakov/simplelogger v0.0.0-20250225125610-1e1723ce15ea h1:9W5uTWHkUg+ywlcvQoG0eZwXkpraHk54DK7miel6AtU=
 github.com/av-belyakov/simplelogger v0.0.0-20250225125610-1e1723ce15ea/go.mod h1:yW2ev3nXPP3WY8svBWJpg4PQRl67MTGIaaiXJ0ULRZ8=
-github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250512120600-9940a6578ff4 h1:N5if8Y1ogfUijqehXQQZAunqUtULi7OWlXedxeRgA58=
-github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250512120600-9940a6578ff4/go.mod h1:PVChkORj00O8/xSQ0UrJihm/dU+9gvdRddi+DtwAnOs=
 github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca h1:10CiLYaxxDD9524HYACXxEIjQY/UzochnUi0vGiL3ao=
 github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca/go.mod h1:PVChkORj00O8/xSQ0UrJihm/dU+9gvdRddi+DtwAnOs=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
