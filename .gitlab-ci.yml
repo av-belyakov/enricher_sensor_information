@@ -143,9 +143,15 @@ deploy-test:
     - echo "Start deploy enricher_sensor_information application for GCM.test"
   script:
     - *docker-login
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.test.yml down
+    - >
+      TYPE_IMAGE=test
+      TYPE_EXECUTION=test
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:test || true
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.test.yml up -d --force-recreate --build
+    - >
+      TYPE_IMAGE=test
+      TYPE_EXECUTION=test
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
 
 #развёртывание основной сборки (GCM)
 deploy-prod-gcm:
@@ -166,6 +172,12 @@ deploy-prod-gcm:
     - echo "Start deploy enricher_sensor_information application for GCM"
   script:
     - *docker-login
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down
+    - >
+      TYPE_IMAGE=latest
+      TYPE_EXECUTION=prod
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:latest || true
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
+    - >
+      TYPE_IMAGE=latest
+      TYPE_EXECUTION=prod
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
