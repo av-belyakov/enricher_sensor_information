@@ -145,7 +145,7 @@ deploy-test:
     - *docker-login
     - TYPE_IMAGE=test
     - TYPE_EXECUTION=test
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down
+    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:test || true
     - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
 
@@ -170,6 +170,6 @@ deploy-prod-gcm:
     - *docker-login
     - TYPE_IMAGE=latest
     - TYPE_EXECUTION=prod
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down
+    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:latest || true
-    - TYPE_IMAGE=latest TYPE_EXECUTION=prod docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
+    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
