@@ -35,7 +35,7 @@ stages:
       - README.md
     when: never
 
-# не выполнять если изменился один из файлов config.yml, config_dev.yml или config_prod.yml
+# не выполнять, если изменился один из файлов config.yml, config_dev.yml или config_prod.yml
 .change-configs-never-commit: &configs-no-commit
   - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_BRANCH == $BRANCH_TEST
     changes:
@@ -45,7 +45,7 @@ stages:
       - config/config_test.yml
     when: never
 
-# не выполнять если изменился один из файлов docker-compose.yml или docker-compose.test.yml
+# не выполнять, если изменился один из файлов docker-compose.yml или docker-compose.test.yml
 .change-docker-compose-never-commit: &docker-compose-no-commit
   - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_BRANCH == $BRANCH_TEST
     changes:
@@ -53,7 +53,7 @@ stages:
       - docker-compose.test.yml
     when: never
 
-# не выполнять если изменился какой либо из файлов в директории test
+# не выполнять, если изменился какой либо из файлов в директории test
 .change-test-files-never-commit: &test-files-no-commit
   - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_BRANCH == $BRANCH_TEST
     changes:
@@ -66,14 +66,14 @@ stages:
 .is-branch-master-commit: &master-commit
   - if: $CI_COMMIT_BRANCH == $BRANCH_MAJOR || $CI_COMMIT_REF_NAME == $BRANCH_MAJOR
 
-#выводим версию приложения
+# вывод версии приложения
 get_version:
   stage: .pre
   <<: *deploy-prod-tags
   script:
     - 'V=`awk ''/[0-9].[0-9].[0-9]/; {print $2}'' $CI_PROJECT_DIR/version`; echo "version $V"'
 
-#сборка тестового образа
+# сборка тестового образа
 build-test:
   stage: build
   <<: *build-tags
@@ -84,7 +84,7 @@ build-test:
     - *docker-compose-no-commit
     - *dev-test-commit
   script:
-    # удаляем старый образ
+    # удаление старого образа
     - docker rmi $CI_REGISTRY_IMAGE:test || true
     - >
       docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
@@ -93,14 +93,14 @@ build-test:
        --build-arg USERPASSWD=$GITLAB_USER_PASSWD \
        --build-arg BRANCH=$BRANCH_TEST \
        --build-arg STATUS=development .
-    # удаляем промежуточный образ с меткой temporary
+    # удаление промежуточного образа с меткой 'temporary'
     - *docker-image-pure
     - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:test
     - *docker-login
     - docker push $CI_REGISTRY_IMAGE:test
     - docker rmi $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA || true
 
-#сборка основного образа
+# сборка основного образа
 build-prod:
   stage: build
   <<: *build-tags
@@ -124,7 +124,7 @@ build-prod:
     - docker push $CI_REGISTRY_IMAGE:latest
     - docker rmi $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA || true
 
-#развёртывание тестовой сборки (GCM.test)
+# развёртывание тестовой сборки (GCM.test)
 deploy-test:
   stage: deploy
   <<: *deploy-test-tags
@@ -143,13 +143,17 @@ deploy-test:
     - echo "Start deploy enricher_sensor_information application for GCM.test"
   script:
     - *docker-login
-    - TYPE_IMAGE=test
-    - TYPE_EXECUTION=test
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
+    - >
+      TYPE_IMAGE=test
+      TYPE_EXECUTION=test
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:test || true
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
+    - >
+      TYPE_IMAGE=test
+      TYPE_EXECUTION=test
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
 
-#развёртывание основной сборки (GCM)
+# развёртывание основной сборки (GCM)
 deploy-prod-gcm:
   stage: deploy
   <<: *deploy-prod-tags
@@ -168,8 +172,12 @@ deploy-prod-gcm:
     - echo "Start deploy enricher_sensor_information application for GCM"
   script:
     - *docker-login
-    - TYPE_IMAGE=latest
-    - TYPE_EXECUTION=prod
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
+    - >
+      TYPE_IMAGE=latest
+      TYPE_EXECUTION=prod
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml down | true
     - docker rmi gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:latest || true
-    - docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
+    - >
+      TYPE_IMAGE=latest
+      TYPE_EXECUTION=prod
+      docker-compose -f $CI_PROJECT_DIR/docker-compose.yml up -d --force-recreate --build
