@@ -19,5 +19,5 @@ func main() {
 		stop()
 	}()
 
-	app(ctx)
+	NewApp(ctx).Start()
 }

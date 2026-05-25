@@ -69,7 +69,7 @@ func TestConfigHandler(t *testing.T) {
 
 		t.Run("Тест 2. Проверка настройки SensorInformationDataBase из файла config_dev.yml", func(t *testing.T) {
 			assert.Equal(t, conf.GetSensorInformationDB().Host, "192.168.9.45")
-			assert.Equal(t, conf.GetSensorInformationDB().User, "Cherry")
+			assert.Equal(t, conf.GetSensorInformationDB().User, "803.p.vishnitsky@avz-center.ru")
 			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, "https://10.0.227.10/api/v2/companies")
 			assert.Equal(t, conf.GetSensorInformationDB().RequestTimeout, 7)
 		})

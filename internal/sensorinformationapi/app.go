@@ -1,8 +1,53 @@
 package sensorinformationapi
 
-import "errors"
+import (
+	"errors"
+	"time"
 
-//******************* функции настройки опций ***********************
+	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
+)
+
+// New настраивает новый модуль взаимодействия с API
+func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, error) {
+	api := &SensorInformationClient{
+		settings: SensorInformationSettings{
+			requestTimeout: 10,
+		},
+	}
+
+	for _, opt := range opts {
+		if err := opt(api); err != nil {
+			return api, err
+		}
+	}
+
+	//инициализация соединения с Zabbix
+	zConn, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
+		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
+			Host:              api.settings.host,
+			Login:             api.settings.user,
+			Passwd:            api.settings.passwd,
+			ConnectionTimeout: time.Duration(api.settings.requestTimeout) * time.Second,
+		})
+	if err != nil {
+		return api, err
+	}
+	api.zabbixConn = zConn
+
+	//инициализация соединения с НКЦКИ
+	ncirccConn, err := ncirccinteractions.NewClient(
+		api.settings.ncirccURL,
+		api.settings.ncirccToken,
+		time.Duration(api.settings.requestTimeout)*time.Second,
+	)
+	if err != nil {
+		return api, err
+	}
+	api.ncirccConn = ncirccConn
+
+	return api, nil
+}
 
 // WithHost имя или ip адрес хоста API
 func WithHost(v string) sensorInformationClientOptions {

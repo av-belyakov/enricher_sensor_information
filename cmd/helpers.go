@@ -12,7 +12,7 @@ import (
 	"github.com/av-belyakov/enricher_sensor_information/internal/confighandler"
 )
 
-func getInformationMessage(conf *confighandler.ConfigApp) string {
+func getInformationMessage(cfgNats *confighandler.CfgNats) string {
 	version, err := appversion.GetVersion()
 	if err != nil {
 		log.Println(err)
@@ -38,12 +38,12 @@ func getInformationMessage(conf *confighandler.ConfigApp) string {
 		"%vConnect to NATS with address %v%s:%d%v%v, subscription %v'%s'%v\n",
 		constants.Ansi_Bright_Green,
 		constants.Ansi_Dark_Gray,
-		conf.NATS.Host,
-		conf.NATS.Port,
+		cfgNats.Host,
+		cfgNats.Port,
 		constants.Ansi_Reset,
 		constants.Ansi_Bright_Green,
 		constants.Ansi_Dark_Gray,
-		conf.NATS.Subscription,
+		cfgNats.Subscription,
 		constants.Ansi_Reset,
 	)
 

@@ -8,13 +8,13 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi/storagetemporary"
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/natsapi/storagetemporary"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // New настраивает новый модуль взаимодействия с API NATS
-func New(counter interfaces.Counter, logger interfaces.Logger, opts ...NatsApiOptions) (*apiNatsModule, error) {
+func New(logger interfaces.Logger, counter interfaces.Counter, opts ...NatsApiOptions) (*apiNatsModule, error) {
 	api := &apiNatsModule{
 		settings: apiNatsSettings{
 			cachettl: 10,

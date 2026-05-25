@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
+	"github.com/goforj/godump"
+
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/natsapi"
 	"github.com/av-belyakov/enricher_sensor_information/internal/requests"
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
-	"github.com/goforj/godump"
 )
 
 // NewRouter инициализация маршрутизатора

@@ -3,8 +3,8 @@ package natsapi
 import (
 	"github.com/nats-io/nats.go"
 
-	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi/storagetemporary"
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/natsapi/storagetemporary"
 )
 
 // apiNatsSettings настройки для API NATS

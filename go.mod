@@ -1,6 +1,6 @@
 module github.com/av-belyakov/enricher_sensor_information
 
-go 1.24.3
+go 1.25.0
 
 require (
 	github.com/av-belyakov/enricher_geoip v0.0.0-20250521115708-1c9a9aefd69d
@@ -45,6 +45,7 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sync v0.20.0
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
