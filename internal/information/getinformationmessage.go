@@ -1,4 +1,4 @@
-package main
+package information
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/av-belyakov/enricher_sensor_information/internal/confighandler"
 )
 
-func getInformationMessage(cfgNats *confighandler.CfgNats) string {
+func GetInformationMessage(cfgNats *confighandler.CfgNats) string {
 	version, err := appversion.GetVersion()
 	if err != nil {
 		log.Println(err)
