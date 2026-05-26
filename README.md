@@ -1,6 +1,6 @@
 # Enricher_sensor_information
 
-[![Go Version](https://img.shields.io/badge/Go-1.24.3+-00ADD8?style=flat&logo=go)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.26.3+-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com/)
 
 Сервис 'enricher_sensor_information' принимает запросы клиентов, через брокер сообщений NATS и выполняет поиск информации о сенсоре в разных источниках. Возвращается следующий перечень информации:
@@ -37,12 +37,15 @@
 
 #### Переменные окружения отвечающие за подключение к БД с информацией о сенсорах
 
-- GO_ENRICHERSENSORINFO_SIHOST - ip или доменное имя;
-- GO_ENRICHERSENSORINFO_SIUSER - имя пользователя
-- GO_ENRICHERSENSORINFO_SIPASSWD - пароль пользователя
-- GO_ENRICHERSENSORINFO_SIRTIMEOUT - время ожидания выполнения запроса
-- GO_ENRICHERSENSORINFO_SINCIRCCURL - URL ресурса НКЦКИ
-- GO_ENRICHERSENSORINFO_SINCIRCCTOKEN - токен для доступа к БД НКЦКИ (данные об организации по её ИНН)
+- GO_ENRICHERSENSORINFO_ZHOST - ip или доменное имя сервера Zabbix
+- GO_ENRICHERSENSORINFO_ZUSER - имя пользователя для сервера Zabbix
+- GO_ENRICHERSENSORINFO_NBHOST - ip или доменное имя сервера Netbox
+- GO_ENRICHERSENSORINFO_NBPORT - порт сервера Netbox
+- GO_ENRICHERSENSORINFO_NCIRCCURL - URL ресурса НКЦКИ
+- GO_ENRICHERSENSORINFO_ZPASSWD - пароль пользователя для сервера Zabbix
+- GO_ENRICHERSENSORINFO_NBTOKEN - токен для сервера Netbox
+- GO_ENRICHERSENSORINFO_NCIRCCTOKEN - токен для доступа к БД НКЦКИ (данные об организации по её ИНН)
+- GO_ENRICHERSENSORINFO_RTIMEOUT - время ожидания выполнения запроса
 
 #### Переменные окружения отвечающие за настройку доступа к БД применяемой для хранения логов
 
