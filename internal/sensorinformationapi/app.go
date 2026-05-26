@@ -49,7 +49,7 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	return api, nil
 }
 
-// WithHost имя или ip адрес хоста API
+// WithHost имя или ip адрес сервера Zabbix
 func WithHost(v string) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
 		if v == "" {
@@ -62,7 +62,7 @@ func WithHost(v string) sensorInformationClientOptions {
 	}
 }
 
-// WithPort порт API
+// WithPort порт сервера Zabbix
 func WithPort(v int) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
 		if v <= 0 || v > 65535 {

@@ -63,7 +63,7 @@ func NewApp(ctx context.Context) *App {
 		app.diContainer.Counter(ctx),
 		app.diContainer.Logger(ctx),
 		router.RouterSettings{
-			SearchCommonInfo: app.diContainer.SensoeInformationDB(),
+			SearchCommonInfo: app.diContainer.SensorInformationDB(),
 			ChanFromNatsApi:  app.diContainer.NatsConnecter(ctx).GetChFromModule(),
 			ChanToNatsApi:    app.diContainer.NatsConnecter(ctx).GetChToModule(),
 		})
@@ -107,7 +107,7 @@ func (a *App) Start() {
 	a.router.Start(a.ctx)
 
 	// вывод информационного сообщения при старте приложения
-	msg := information.GetInformationMessage(a.diContainer.Configer().GetNATS())
+	msg := information.GetInformationMessage(a.diContainer.Configer())
 	a.diContainer.SimpleLogger(a.ctx).Write("info", strings.ToLower(msg))
 
 	<-a.ctx.Done()

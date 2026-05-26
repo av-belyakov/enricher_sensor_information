@@ -9,10 +9,10 @@ import (
 	"github.com/av-belyakov/enricher_geoip/constants"
 	"github.com/av-belyakov/enricher_sensor_information/internal/appname"
 	"github.com/av-belyakov/enricher_sensor_information/internal/appversion"
-	"github.com/av-belyakov/enricher_sensor_information/internal/confighandler"
+	"github.com/av-belyakov/enricher_sensor_information/internal/dicontainer"
 )
 
-func GetInformationMessage(cfgNats *confighandler.CfgNats) string {
+func GetInformationMessage(cfg dicontainer.Configer) string {
 	version, err := appversion.GetVersion()
 	if err != nil {
 		log.Println(err)
@@ -34,16 +34,22 @@ func GetInformationMessage(cfgNats *confighandler.CfgNats) string {
 		appStatus,
 		constants.Ansi_Reset,
 	)
+	fmt.Printf("%vSensor information database settings:%v\n", constants.Ansi_Bright_Green, constants.Ansi_Reset)
+	fmt.Printf("  %vZabbix host:%v%s%v\n", constants.Ansi_Bright_Green, constants.Ansi_Bright_Blue, cfg.GetSensorInformationDB().ZabbixHost, constants.Ansi_Reset)
+	fmt.Printf("  %vZabbix user:%v%s%v\n", constants.Ansi_Bright_Green, constants.Ansi_Bright_Blue, cfg.GetSensorInformationDB().ZabbixUser, constants.Ansi_Reset)
+	fmt.Printf("  %vNetbox host:%v%s%v\n", constants.Ansi_Bright_Green, constants.Ansi_Bright_Blue, cfg.GetSensorInformationDB().NetboxHost, constants.Ansi_Reset)
+	fmt.Printf("  %vNetbox port:%v%d%v\n", constants.Ansi_Bright_Green, constants.Ansi_Bright_Magenta, cfg.GetSensorInformationDB().NetboxPort, constants.Ansi_Reset)
+	fmt.Printf("  %vNCIRCC URL:%v%s%v\n", constants.Ansi_Bright_Green, constants.Ansi_Bright_Blue, cfg.GetSensorInformationDB().NCIRCCURL, constants.Ansi_Reset)
 	fmt.Printf(
 		"%vConnect to NATS with address %v%s:%d%v%v, subscription %v'%s'%v\n",
 		constants.Ansi_Bright_Green,
 		constants.Ansi_Dark_Gray,
-		cfgNats.Host,
-		cfgNats.Port,
+		cfg.GetNATS().Host,
+		cfg.GetNATS().Port,
 		constants.Ansi_Reset,
 		constants.Ansi_Bright_Green,
 		constants.Ansi_Dark_Gray,
-		cfgNats.Subscription,
+		cfg.GetNATS().Subscription,
 		constants.Ansi_Reset,
 	)
 

@@ -3,38 +3,38 @@ package confighandler
 import "errors"
 
 // GetCommon общие настройки
-func (c *ConfigApp) GetCommon() *CfgCommon {
-	return &c.Common
+func (c *ConfigApp) GetCommon() CfgCommon {
+	return c.Common
 }
 
 // GetNATS настройки для NATS
-func (c *ConfigApp) GetNATS() *CfgNats {
-	return &c.NATS
+func (c *ConfigApp) GetNATS() CfgNats {
+	return c.NATS
 }
 
 // GetSensorInformationDB настройки записи данных в БД
-func (c *ConfigApp) GetSensorInformationDB() *CfgSensorInformationDB {
-	return &c.SensorInformationDB
+func (c *ConfigApp) GetSensorInformationDB() CfgSensorInformationDB {
+	return c.SensorInformationDB
 }
 
 // GetLogDB настройки для БД обеспечивающей логирование данных
-func (c *ConfigApp) GetLogDB() *CfgWriteLogDB {
-	return &c.LogDB
+func (c *ConfigApp) GetLogDB() CfgWriteLogDB {
+	return c.LogDB
 }
 
 // GetDebugServer настройки для отладочного сервера
-func (c *ConfigApp) GetDebugServer() *CfgDebugServer {
-	return &c.DebugServer
+func (c *ConfigApp) GetDebugServer() CfgDebugServer {
+	return c.DebugServer
+}
+
+// GetZabbix настройки взаимодействия с Zabbix
+func (c *ConfigApp) GetZabbix() ZabbixOptions {
+	return c.Common.Zabbix
 }
 
 // GetListLogs список типов логирования (error, info и т.д.)
 func (c *ConfigApp) GetListLogs() []*LogSet {
 	return c.Common.Logs
-}
-
-// GetZabbix настройки взаимодействия с Zabbix
-func (c *ConfigApp) GetZabbix() *ZabbixOptions {
-	return &c.Common.Zabbix
 }
 
 // SetNameMessageType наименование типа логирования

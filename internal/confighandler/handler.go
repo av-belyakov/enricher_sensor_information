@@ -199,21 +199,25 @@ func New(rootDir string) (*ConfigApp, error) {
 	}
 
 	var fn string
-	if envList["GO_ENRICHERSENSORINFO_MAIN"] == "development" {
+	switch envList["GO_ENRICHERSENSORINFO_MAIN"] {
+	case "development":
 		fn, err = getFileName("config_dev.yml", confPath, list)
 		if err != nil {
 			return cfg, err
 		}
-	} else if envList["GO_ENRICHERSENSORINFO_MAIN"] == "test" {
+
+	case "test":
 		fn, err = getFileName("config_test.yml", confPath, list)
 		if err != nil {
 			return cfg, err
 		}
-	} else {
+
+	default:
 		fn, err = getFileName("config_prod.yml", confPath, list)
 		if err != nil {
 			return cfg, err
 		}
+
 	}
 
 	if err := setSpecial(fn); err != nil {

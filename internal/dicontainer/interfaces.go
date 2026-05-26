@@ -28,11 +28,12 @@ type SimpleLogger interface {
 }
 
 type Configer interface {
-	GetCommon() *confighandler.CfgCommon
-	GetNATS() *confighandler.CfgNats
-	GetLogDB() *confighandler.CfgWriteLogDB
+	GetCommon() confighandler.CfgCommon
+	GetNATS() confighandler.CfgNats
+	GetLogDB() confighandler.CfgWriteLogDB
 	GetListLogs() []*confighandler.LogSet
-	GetSensorInformationDB() *confighandler.CfgSensorInformationDB
+	GetDebugServer() confighandler.CfgDebugServer
+	GetSensorInformationDB() confighandler.CfgSensorInformationDB
 }
 
 type NatsConnecter interface {

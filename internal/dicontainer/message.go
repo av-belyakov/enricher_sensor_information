@@ -132,13 +132,13 @@ func (d *DiContainer) NatsConnecter(ctx context.Context) NatsConnecter {
 	return d.nats
 }
 
-// SensoeInformationDB подключение к БД с данными о сенсорах
-func (d *DiContainer) SensoeInformationDB() SensorInformationConnecter {
+// SensorInformationDB подключение к БД с данными о сенсорах
+func (d *DiContainer) SensorInformationDB() SensorInformationConnecter {
 	if d.sensorInformationDB == nil {
 		client, err := sensorinformationapi.New(
-			sensorinformationapi.WithHost(d.Configer().GetSensorInformationDB().Host),
-			sensorinformationapi.WithUser(d.Configer().GetSensorInformationDB().User),
-			sensorinformationapi.WithPasswd(d.Configer().GetSensorInformationDB().Passwd),
+			sensorinformationapi.WithHost(d.Configer().GetSensorInformationDB().ZabbixHost),
+			sensorinformationapi.WithUser(d.Configer().GetSensorInformationDB().ZabbixUser),
+			sensorinformationapi.WithPasswd(d.Configer().GetSensorInformationDB().ZabbixPasswd),
 			sensorinformationapi.WithNCIRCCURL(d.Configer().GetSensorInformationDB().NCIRCCURL),
 			sensorinformationapi.WithNCIRCCToken(d.Configer().GetSensorInformationDB().NCIRCCToken),
 			sensorinformationapi.WithRequestTimeout(d.Configer().GetSensorInformationDB().RequestTimeout))
