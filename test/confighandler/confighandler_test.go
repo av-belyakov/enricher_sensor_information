@@ -3,6 +3,7 @@ package confighandler_test
 import (
 	"log"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -68,8 +69,10 @@ func TestConfigHandler(t *testing.T) {
 		})
 
 		t.Run("Тест 2. Проверка настройки SensorInformationDataBase из файла config_dev.yml", func(t *testing.T) {
-			assert.Equal(t, conf.GetSensorInformationDB().Host, "192.168.9.45")
-			assert.Equal(t, conf.GetSensorInformationDB().User, "803.p.vishnitsky@avz-center.ru")
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixHost, "192.168.9.45")
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixUser, "803.p.vishnitsky@avz-center.ru")
+			assert.Equal(t, conf.GetSensorInformationDB().NetboxHost, "netbox.cloud.gcm")
+			assert.Equal(t, conf.GetSensorInformationDB().NetboxPort, 8005)
 			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, "https://10.0.227.10/api/v2/companies")
 			assert.Equal(t, conf.GetSensorInformationDB().RequestTimeout, 7)
 		})
@@ -81,6 +84,12 @@ func TestConfigHandler(t *testing.T) {
 			assert.Equal(t, conf.GetLogDB().Passwd, os.Getenv("GO_ENRICHERSENSORINFO_DBWLOGPASSWD"))
 			assert.Equal(t, conf.GetLogDB().NameDB, "")
 			assert.Equal(t, conf.GetLogDB().StorageNameDB, "enricher_geoip")
+		})
+
+		t.Run("Тест 4. Проверка настройки сервера отладки", func(t *testing.T) {
+			assert.True(t, conf.GetDebugServer().Enable)
+			assert.Equal(t, conf.GetDebugServer().Host, "localhost")
+			assert.Equal(t, conf.GetDebugServer().Port, 6262)
 		})
 	})
 
@@ -100,22 +109,41 @@ func TestConfigHandler(t *testing.T) {
 			assert.Equal(t, conf.GetNATS().Subscription, "obj.subscript.test_request")
 		})
 
-		t.Run("Тест 2. Проверка настройки GeoIPDataBase", func(t *testing.T) {
-			os.Setenv("GO_ENRICHERSENSORINFO_SIHOST", "127.0.0.1")
-			os.Setenv("GO_ENRICHERSENSORINFO_SIUSER", "CherryTiggo")
-			os.Setenv("GO_ENRICHERSENSORINFO_SIPASSWD", "SomE_oLd_pasSw")
-			os.Setenv("GO_ENRICHERSENSORINFO_SIRTIMEOUT", "10")
-			os.Setenv("GO_ENRICHERSENSORINFO_SINCIRCCURL", "https://example.io/api/v2/companies")
-			os.Setenv("GO_ENRICHERSENSORINFO_SINCIRCCTOKEN", "fa932bca82")
+		t.Run("Тест 2. Проверка настройки базы данных с информацией о сенсорах", func(t *testing.T) {
+			zhost := "127.0.0.1"
+			zuser := "CherryTiggo"
+			nhost := "netbox.cloudhost"
+			nport := "7562"
+			ncirccurl := "https://example.io/api/v2/companies"
+			nbtoken := "yydooosmmmskfkfkflddlfgj"
+			zpasswd := "SomE_oLd_pasSw"
+			ncircctoken := "fa932bca82"
+			rtimeout := "10"
+
+			os.Setenv("GO_ENRICHERSENSORINFO_ZHOST", zhost)
+			os.Setenv("GO_ENRICHERSENSORINFO_ZUSER", zuser)
+			os.Setenv("GO_ENRICHERSENSORINFO_NBHOST", nhost)
+			os.Setenv("GO_ENRICHERSENSORINFO_NBPORT", nport)
+			os.Setenv("GO_ENRICHERSENSORINFO_NCIRCCURL", ncirccurl)
+			os.Setenv("GO_ENRICHERSENSORINFO_NBTOKEN", nbtoken)
+			os.Setenv("GO_ENRICHERSENSORINFO_ZPASSWD", zpasswd)
+			os.Setenv("GO_ENRICHERSENSORINFO_NCIRCCTOKEN", ncircctoken)
+			os.Setenv("GO_ENRICHERSENSORINFO_RTIMEOUT", rtimeout)
 			conf, err := confighandler.New(constants.Root_Dir)
 			assert.NoError(t, err)
 
-			assert.Equal(t, conf.GetSensorInformationDB().Host, "127.0.0.1")
-			assert.Equal(t, conf.GetSensorInformationDB().User, "CherryTiggo")
-			assert.Equal(t, conf.GetSensorInformationDB().Passwd, "SomE_oLd_pasSw")
-			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, "https://example.io/api/v2/companies")
-			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCToken, "fa932bca82")
-			assert.Equal(t, conf.GetSensorInformationDB().RequestTimeout, 10)
+			netboxPort, _ := strconv.Atoi(nport)
+			requestTimeout, _ := strconv.Atoi(rtimeout)
+
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixHost, zhost)
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixUser, zuser)
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixPasswd, zpasswd)
+			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, ncirccurl)
+			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCToken, ncircctoken)
+			assert.Equal(t, conf.GetSensorInformationDB().NetboxHost, nhost)
+			assert.Equal(t, conf.GetSensorInformationDB().NetboxPort, netboxPort)
+			assert.Equal(t, conf.GetSensorInformationDB().NetboxToken, nbtoken)
+			assert.Equal(t, conf.GetSensorInformationDB().RequestTimeout, requestTimeout)
 		})
 
 		t.Run("Тест 3. Проверка настройки WriteLogDataBase", func(t *testing.T) {

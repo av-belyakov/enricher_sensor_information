@@ -15,7 +15,7 @@ import (
 )
 
 func New(rootDir string) (*ConfigApp, error) {
-	conf := &ConfigApp{}
+	cfg := &ConfigApp{}
 
 	var (
 		validate *validator.Validate
@@ -72,7 +72,7 @@ func New(rootDir string) (*ConfigApp, error) {
 				return err
 			}
 
-			conf.Common.Logs = ls.Logging
+			cfg.Common.Logs = ls.Logging
 		}
 
 		z := ZabbixSet{}
@@ -86,7 +86,7 @@ func New(rootDir string) (*ConfigApp, error) {
 				np = z.Zabbix.NetworkPort
 			}
 
-			conf.Common.Zabbix = ZabbixOptions{
+			cfg.Common.Zabbix = ZabbixOptions{
 				NetworkPort: np,
 				NetworkHost: z.Zabbix.NetworkHost,
 				ZabbixHost:  z.Zabbix.ZabbixHost,
@@ -106,64 +106,64 @@ func New(rootDir string) (*ConfigApp, error) {
 
 		//Настройки для модуля подключения к NATS
 		if viper.IsSet("NATS.host") {
-			conf.NATS.Host = viper.GetString("NATS.host")
+			cfg.NATS.Host = viper.GetString("NATS.host")
 		}
 		if viper.IsSet("NATS.port") {
-			conf.NATS.Port = viper.GetInt("NATS.port")
+			cfg.NATS.Port = viper.GetInt("NATS.port")
 		}
 		if viper.IsSet("NATS.cache_ttl") {
-			conf.NATS.CacheTTL = viper.GetInt("NATS.cache_ttl")
+			cfg.NATS.CacheTTL = viper.GetInt("NATS.cache_ttl")
 		}
 		if viper.IsSet("NATS.subscription") {
-			conf.NATS.Subscription = viper.GetString("NATS.subscription")
+			cfg.NATS.Subscription = viper.GetString("NATS.subscription")
 		}
 
 		// Настройки доступа к базам обогащения дополнительной информацией
 		if viper.IsSet("SensorInformationDataBase.zabbix_host") {
-			conf.SensorInformationDB.ZabbixHost = viper.GetString("SensorInformationDataBase.zabbix_host")
+			cfg.SensorInformationDB.ZabbixHost = viper.GetString("SensorInformationDataBase.zabbix_host")
 		}
 		if viper.IsSet("SensorInformationDataBase.zabbix_user") {
-			conf.SensorInformationDB.ZabbixUser = viper.GetString("SensorInformationDataBase.zabbix_user")
+			cfg.SensorInformationDB.ZabbixUser = viper.GetString("SensorInformationDataBase.zabbix_user")
 		}
 		if viper.IsSet("SensorInformationDataBase.netbox_host") {
-			conf.SensorInformationDB.NetboxHost = viper.GetString("SensorInformationDataBase.netbox_host")
+			cfg.SensorInformationDB.NetboxHost = viper.GetString("SensorInformationDataBase.netbox_host")
 		}
 		if viper.IsSet("SensorInformationDataBase.netbox_port") {
-			conf.SensorInformationDB.NetboxPort = viper.GetInt("SensorInformationDataBase.netbox_port")
+			cfg.SensorInformationDB.NetboxPort = viper.GetInt("SensorInformationDataBase.netbox_port")
 		}
 		if viper.IsSet("SensorInformationDataBase.ncircc_url") {
-			conf.SensorInformationDB.NCIRCCURL = viper.GetString("SensorInformationDataBase.ncircc_url")
+			cfg.SensorInformationDB.NCIRCCURL = viper.GetString("SensorInformationDataBase.ncircc_url")
 		}
 		if viper.IsSet("SensorInformationDataBase.request_timeout") {
-			conf.SensorInformationDB.RequestTimeout = viper.GetInt("SensorInformationDataBase.request_timeout")
+			cfg.SensorInformationDB.RequestTimeout = viper.GetInt("SensorInformationDataBase.request_timeout")
 		}
 
 		// Настройки доступа к БД в которую будут записыватся логи
 		if viper.IsSet("WriteLogDataBase.host") {
-			conf.LogDB.Host = viper.GetString("WriteLogDataBase.host")
+			cfg.LogDB.Host = viper.GetString("WriteLogDataBase.host")
 		}
 		if viper.IsSet("WriteLogDataBase.port") {
-			conf.LogDB.Port = viper.GetInt("WriteLogDataBase.port")
+			cfg.LogDB.Port = viper.GetInt("WriteLogDataBase.port")
 		}
 		if viper.IsSet("WriteLogDataBase.user") {
-			conf.LogDB.User = viper.GetString("WriteLogDataBase.user")
+			cfg.LogDB.User = viper.GetString("WriteLogDataBase.user")
 		}
 		if viper.IsSet("WriteLogDataBase.namedb") {
-			conf.LogDB.NameDB = viper.GetString("WriteLogDataBase.namedb")
+			cfg.LogDB.NameDB = viper.GetString("WriteLogDataBase.namedb")
 		}
 		if viper.IsSet("WriteLogDataBase.storage_name_db") {
-			conf.LogDB.StorageNameDB = viper.GetString("WriteLogDataBase.storage_name_db")
+			cfg.LogDB.StorageNameDB = viper.GetString("WriteLogDataBase.storage_name_db")
 		}
 
 		// Настройки для отладочного сервера
 		if viper.IsSet("DebugServer.enable") {
-			conf.DebugServer.Enable = viper.GetBool("DebugServer.enable")
+			cfg.DebugServer.Enable = viper.GetBool("DebugServer.enable")
 		}
 		if viper.IsSet("DebugServer.host") {
-			conf.DebugServer.Host = viper.GetString("DebugServer.host")
+			cfg.DebugServer.Host = viper.GetString("DebugServer.host")
 		}
 		if viper.IsSet("DebugServer.port") {
-			conf.DebugServer.Port = viper.GetInt("DebugServer.port")
+			cfg.DebugServer.Port = viper.GetInt("DebugServer.port")
 		}
 
 		return nil
@@ -179,138 +179,126 @@ func New(rootDir string) (*ConfigApp, error) {
 
 	rootPath, err := supportingfunctions.GetRootPath(rootDir)
 	if err != nil {
-		return conf, err
+		return cfg, err
 	}
 
 	confPath := filepath.Join(rootPath, "config")
 	list, err := os.ReadDir(confPath)
 	if err != nil {
-		return conf, err
+		return cfg, err
 	}
 
 	fileNameCommon, err := getFileName("config.yml", confPath, list)
 	if err != nil {
-		return conf, err
+		return cfg, err
 	}
 
 	//читаем общий конфигурационный файл
 	if err := setCommonSettings(fileNameCommon); err != nil {
-		return conf, err
+		return cfg, err
 	}
 
 	var fn string
 	if envList["GO_ENRICHERSENSORINFO_MAIN"] == "development" {
 		fn, err = getFileName("config_dev.yml", confPath, list)
 		if err != nil {
-			return conf, err
+			return cfg, err
 		}
 	} else if envList["GO_ENRICHERSENSORINFO_MAIN"] == "test" {
 		fn, err = getFileName("config_test.yml", confPath, list)
 		if err != nil {
-			return conf, err
+			return cfg, err
 		}
 	} else {
 		fn, err = getFileName("config_prod.yml", confPath, list)
 		if err != nil {
-			return conf, err
+			return cfg, err
 		}
 	}
 
 	if err := setSpecial(fn); err != nil {
-		return conf, err
+		return cfg, err
 	}
 
 	//Настройки для модуля подключения к NATS
 	if envList["GO_ENRICHERSENSORINFO_NHOST"] != "" {
-		conf.NATS.Host = envList["GO_ENRICHERSENSORINFO_NHOST"]
+		cfg.NATS.Host = envList["GO_ENRICHERSENSORINFO_NHOST"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_NPORT"] != "" {
 		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NPORT"]); err == nil {
-			conf.NATS.Port = p
+			cfg.NATS.Port = p
 		}
 	}
 	if envList["GO_ENRICHERSENSORINFO_NCACHETTL"] != "" {
 		if ttl, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NCACHETTL"]); err == nil {
-			conf.NATS.CacheTTL = ttl
+			cfg.NATS.CacheTTL = ttl
 		}
 	}
 	if envList["GO_ENRICHERSENSORINFO_NSUBSC"] != "" {
-		conf.NATS.Subscription = envList["GO_ENRICHERSENSORINFO_NSUBSC"]
+		cfg.NATS.Subscription = envList["GO_ENRICHERSENSORINFO_NSUBSC"]
 	}
-
-	/*
-		+		"GO_ENRICHERSENSORINFO_ZHOST":       "",
-		+		"GO_ENRICHERSENSORINFO_ZUSER":       "",
-		+		"GO_ENRICHERSENSORINFO_NBHOST":      "",
-		+		"GO_ENRICHERSENSORINFO_NBPORT":      "",
-		+		"GO_ENRICHERSENSORINFO_NCIRCCURL":   "",
-		+		"GO_ENRICHERSENSORINFO_ZPASSWD":     "",
-		+		"GO_ENRICHERSENSORINFO_NBTOKEN":     "",
-		+		"GO_ENRICHERSENSORINFO_NCIRCCTOKEN": "",
-		+		"GO_ENRICHERSENSORINFO_RTIMEOUT":    "",
-	*/
 
 	//Подключение к БД с информацией о сенсорах
 	if envList["GO_ENRICHERSENSORINFO_ZHOST"] != "" {
-		conf.SensorInformationDB.ZabbixHost = envList["GO_ENRICHERSENSORINFO_ZHOST"]
+		cfg.SensorInformationDB.ZabbixHost = envList["GO_ENRICHERSENSORINFO_ZHOST"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_ZUSER"] != "" {
-		conf.SensorInformationDB.ZabbixUser = envList["GO_ENRICHERSENSORINFO_ZUSER"]
+		cfg.SensorInformationDB.ZabbixUser = envList["GO_ENRICHERSENSORINFO_ZUSER"]
 	}
 
 	if envList["GO_ENRICHERSENSORINFO_NBHOST"] != "" {
-		conf.SensorInformationDB.NetboxHost = envList["GO_ENRICHERSENSORINFO_NBHOST"]
+		cfg.SensorInformationDB.NetboxHost = envList["GO_ENRICHERSENSORINFO_NBHOST"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_NBPORT"] != "" {
 		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NBPORT"]); err == nil {
-			conf.SensorInformationDB.NetboxPort = p
+			cfg.SensorInformationDB.NetboxPort = p
 		}
 	}
 
 	if envList["GO_ENRICHERSENSORINFO_NCIRCCURL"] != "" {
-		conf.SensorInformationDB.NCIRCCURL = envList["GO_ENRICHERSENSORINFO_SINCIRCCURL"]
+		cfg.SensorInformationDB.NCIRCCURL = envList["GO_ENRICHERSENSORINFO_NCIRCCURL"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_ZPASSWD"] != "" {
-		conf.SensorInformationDB.ZabbixPasswd = envList["GO_ENRICHERSENSORINFO_ZPASSWD"]
+		cfg.SensorInformationDB.ZabbixPasswd = envList["GO_ENRICHERSENSORINFO_ZPASSWD"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_NBTOKEN"] != "" {
-		conf.SensorInformationDB.NetboxToken = envList["GO_ENRICHERSENSORINFO_NBTOKEN"]
+		cfg.SensorInformationDB.NetboxToken = envList["GO_ENRICHERSENSORINFO_NBTOKEN"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_NCIRCCTOKEN"] != "" {
-		conf.SensorInformationDB.NCIRCCToken = envList["GO_ENRICHERSENSORINFO_NCIRCCTOKEN"]
+		cfg.SensorInformationDB.NCIRCCToken = envList["GO_ENRICHERSENSORINFO_NCIRCCTOKEN"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_RTIMEOUT"] != "" {
 		if timeout, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_RTIMEOUT"]); err == nil {
-			conf.SensorInformationDB.RequestTimeout = timeout
+			cfg.SensorInformationDB.RequestTimeout = timeout
 		}
 	}
 
 	//Настройки доступа к БД в которую будут записыватся логи
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGHOST"] != "" {
-		conf.LogDB.Host = envList["GO_ENRICHERSENSORINFO_DBWLOGHOST"]
+		cfg.LogDB.Host = envList["GO_ENRICHERSENSORINFO_DBWLOGHOST"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGPORT"] != "" {
 		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_DBWLOGPORT"]); err == nil {
-			conf.LogDB.Port = p
+			cfg.LogDB.Port = p
 		}
 	}
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGNAME"] != "" {
-		conf.LogDB.NameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGNAME"]
+		cfg.LogDB.NameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGNAME"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGUSER"] != "" {
-		conf.LogDB.User = envList["GO_ENRICHERSENSORINFO_DBWLOGUSER"]
+		cfg.LogDB.User = envList["GO_ENRICHERSENSORINFO_DBWLOGUSER"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGPASSWD"] != "" {
-		conf.LogDB.Passwd = envList["GO_ENRICHERSENSORINFO_DBWLOGPASSWD"]
+		cfg.LogDB.Passwd = envList["GO_ENRICHERSENSORINFO_DBWLOGPASSWD"]
 	}
 	if envList["GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME"] != "" {
-		conf.LogDB.StorageNameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME"]
+		cfg.LogDB.StorageNameDB = envList["GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME"]
 	}
 
 	//выполняем проверку заполненой структуры
-	if err = validate.Struct(conf); err != nil {
-		return conf, err
+	if err = validate.Struct(cfg); err != nil {
+		return cfg, err
 	}
 
-	return conf, nil
+	return cfg, nil
 }

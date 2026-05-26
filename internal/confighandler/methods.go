@@ -22,8 +22,8 @@ func (c *ConfigApp) GetLogDB() *CfgWriteLogDB {
 	return &c.LogDB
 }
 
-// GetDebugServerr настройки для отладочного сервера
-func (c *ConfigApp) GetDebugServerr() *CfgDebugServer {
+// GetDebugServer настройки для отладочного сервера
+func (c *ConfigApp) GetDebugServer() *CfgDebugServer {
 	return &c.DebugServer
 }
 
