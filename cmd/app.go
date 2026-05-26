@@ -76,7 +76,7 @@ func (a *App) Start() {
 	if os.Getenv("GO_ENRICHERSENSORINFO_MAIN") == "test" || os.Getenv("GO_ENRICHERSENSORINFO_MAIN") == "development" {
 		go func() {
 			debugServerHost := "localhost"
-			debugServerPort := 6161
+			debugServerPort := 6263
 
 			httpServer := &http.Server{
 				Addr: fmt.Sprintf("%s:%d", debugServerHost, debugServerPort),
