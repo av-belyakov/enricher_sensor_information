@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/netboxinteractions"
 	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
 
@@ -25,15 +26,27 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	//инициализация соединения с Zabbix
 	zConn, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
 		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
-			Host:              api.settings.host,
-			Login:             api.settings.user,
-			Passwd:            api.settings.passwd,
+			Host:              api.settings.zabbixHost,
+			Login:             api.settings.zabbixUser,
+			Passwd:            api.settings.zabbixPasswd,
 			ConnectionTimeout: time.Duration(api.settings.requestTimeout) * time.Second,
 		})
 	if err != nil {
 		return api, err
 	}
 	api.zabbixConn = zConn
+
+	//инициализация соединения с Netbox
+	netboxConn, err := netboxinteractions.New(
+		api.settings.netboxToken,
+		netboxinteractions.WithHost(api.settings.netboxHost),
+		netboxinteractions.WithPort(api.settings.netboxPort),
+		netboxinteractions.WithTimeout(api.settings.requestTimeout),
+	)
+	if err != nil {
+		return api, err
+	}
+	api.netboxConn = netboxConn
 
 	//инициализация соединения с НКЦКИ
 	ncirccConn, err := ncirccinteractions.NewClient(
@@ -49,53 +62,79 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	return api, nil
 }
 
-// WithHost имя или ip адрес сервера Zabbix
-func WithHost(v string) sensorInformationClientOptions {
+// WithZabbixHost имя или ip адрес сервера Zabbix
+func WithZabbixHost(v string) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
 		if v == "" {
-			return errors.New("the value of 'host' cannot be empty")
+			return errors.New("the value of 'host' for Zabbix cannot be empty")
 		}
 
-		sic.settings.host = v
+		sic.settings.zabbixHost = v
 
 		return nil
 	}
 }
 
-// WithPort порт сервера Zabbix
-func WithPort(v int) sensorInformationClientOptions {
+// WithZabbixUser имя пользователя для сервера Zabbix
+func WithZabbixUser(v string) sensorInformationClientOptions {
+	return func(sic *SensorInformationClient) error {
+		if v == "" {
+			return errors.New("the value of 'user' for Zabbix cannot be empty")
+		}
+
+		sic.settings.zabbixUser = v
+
+		return nil
+	}
+}
+
+// WithZabbixPasswd пароль пользователя для сервера Zabbix
+func WithZabbixPasswd(v string) sensorInformationClientOptions {
+	return func(sic *SensorInformationClient) error {
+		if v == "" {
+			return errors.New("the value of 'passwd' for Zabbix cannot be empty")
+		}
+
+		sic.settings.zabbixPasswd = v
+
+		return nil
+	}
+}
+
+// WithNetboxHost имя или ip адрес сервера Netbox
+func WithNetboxHost(v string) sensorInformationClientOptions {
+	return func(sic *SensorInformationClient) error {
+		if v == "" {
+			return errors.New("the value of 'host' for Netbox cannot be empty")
+		}
+
+		sic.settings.zabbixHost = v
+
+		return nil
+	}
+}
+
+// WithNetboxPort порт сервера Netbox
+func WithNetboxPort(v int) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
 		if v <= 0 || v > 65535 {
 			return errors.New("an incorrect network port value was received")
 		}
 
-		sic.settings.port = v
+		sic.settings.netboxPort = v
 
 		return nil
 	}
 }
 
-// WithUser имя пользователя
-func WithUser(v string) sensorInformationClientOptions {
+// WithNetboxToken токен сервера Netbox
+func WithNetboxToken(v string) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
 		if v == "" {
-			return errors.New("the value of 'user' cannot be empty")
+			return errors.New("the value of 'netboxToken' cannot be empty")
 		}
 
-		sic.settings.user = v
-
-		return nil
-	}
-}
-
-// WithPasswd пароль пользователя пользователя
-func WithPasswd(v string) sensorInformationClientOptions {
-	return func(sic *SensorInformationClient) error {
-		if v == "" {
-			return errors.New("the value of 'passwd' cannot be empty")
-		}
-
-		sic.settings.passwd = v
+		sic.settings.netboxToken = v
 
 		return nil
 	}

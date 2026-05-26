@@ -2,6 +2,7 @@ package sensorinformationapi
 
 import (
 	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
+	"github.com/av-belyakov/enricher_sensor_information/internal/netboxinteractions"
 	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
 
@@ -9,17 +10,20 @@ import (
 type SensorInformationClient struct {
 	ncirccConn *ncirccinteractions.ClientNICRCC
 	zabbixConn *zabbixinteractions.ZabbixConnectionJsonRPC
+	netboxConn *netboxinteractions.Client
 	settings   SensorInformationSettings
 }
 
 // SensorInformationSettings настройки модуля
 type SensorInformationSettings struct {
-	host           string
-	user           string
-	passwd         string
-	ncirccURL      string
+	zabbixPasswd   string
+	zabbixHost     string
+	zabbixUser     string
 	ncirccToken    string
-	port           int
+	ncirccURL      string
+	netboxToken    string
+	netboxHost     string
+	netboxPort     int
 	requestTimeout int
 }
 
