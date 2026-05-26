@@ -4,8 +4,10 @@ NATS:
   cache_ttl: 3600
   subscription: object.sensor-info-request.test
 SensorInformationDataBase:
-  host: 192.168.9.45
-  user: 803.p.vishnitsky@avz-center.ru
+  zabbix_host: 192.168.9.45
+  zabbix_user: 803.p.vishnitsky@avz-center.ru
+  netbox_host: netbox.cloud.gcm
+  netbox_port: 8005
   ncircc_url: https://10.0.227.10/api/v2/companies
   request_timeout: 7
 WriteLogDataBase:
@@ -14,3 +16,7 @@ WriteLogDataBase:
   user: log_writer
   namedb:
   storage_name_db: enricher_geoip
+DebugServer:
+  enable: true
+  host: localhost
+  port: 6262

@@ -22,6 +22,11 @@ func (c *ConfigApp) GetLogDB() *CfgWriteLogDB {
 	return &c.LogDB
 }
 
+// GetDebugServerr настройки для отладочного сервера
+func (c *ConfigApp) GetDebugServerr() *CfgDebugServer {
+	return &c.DebugServer
+}
+
 // GetListLogs список типов логирования (error, info и т.д.)
 func (c *ConfigApp) GetListLogs() []*LogSet {
 	return c.Common.Logs

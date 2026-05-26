@@ -29,12 +29,15 @@ func New(rootDir string) (*ConfigApp, error) {
 			"GO_ENRICHERSENSORINFO_NCACHETTL": "",
 
 			//Подключение к БД с информацией о сенсорах
-			"GO_ENRICHERSENSORINFO_SIHOST":        "",
-			"GO_ENRICHERSENSORINFO_SIUSER":        "",
-			"GO_ENRICHERSENSORINFO_SIPASSWD":      "",
-			"GO_ENRICHERSENSORINFO_SIRTIMEOUT":    "",
-			"GO_ENRICHERSENSORINFO_SINCIRCCURL":   "",
-			"GO_ENRICHERSENSORINFO_SINCIRCCTOKEN": "",
+			"GO_ENRICHERSENSORINFO_ZHOST":       "",
+			"GO_ENRICHERSENSORINFO_ZUSER":       "",
+			"GO_ENRICHERSENSORINFO_NBHOST":      "",
+			"GO_ENRICHERSENSORINFO_NBPORT":      "",
+			"GO_ENRICHERSENSORINFO_NCIRCCURL":   "",
+			"GO_ENRICHERSENSORINFO_ZPASSWD":     "",
+			"GO_ENRICHERSENSORINFO_NBTOKEN":     "",
+			"GO_ENRICHERSENSORINFO_NCIRCCTOKEN": "",
+			"GO_ENRICHERSENSORINFO_RTIMEOUT":    "",
 
 			//Настройки доступа к БД в которую будут записыватся логи
 			"GO_ENRICHERSENSORINFO_DBWLOGHOST":        "",
@@ -115,12 +118,18 @@ func New(rootDir string) (*ConfigApp, error) {
 			conf.NATS.Subscription = viper.GetString("NATS.subscription")
 		}
 
-		// Настройки доступа к БД GeoIP
-		if viper.IsSet("SensorInformationDataBase.host") {
-			conf.SensorInformationDB.Host = viper.GetString("SensorInformationDataBase.host")
+		// Настройки доступа к базам обогащения дополнительной информацией
+		if viper.IsSet("SensorInformationDataBase.zabbix_host") {
+			conf.SensorInformationDB.ZabbixHost = viper.GetString("SensorInformationDataBase.zabbix_host")
 		}
-		if viper.IsSet("SensorInformationDataBase.user") {
-			conf.SensorInformationDB.User = viper.GetString("SensorInformationDataBase.user")
+		if viper.IsSet("SensorInformationDataBase.zabbix_user") {
+			conf.SensorInformationDB.ZabbixUser = viper.GetString("SensorInformationDataBase.zabbix_user")
+		}
+		if viper.IsSet("SensorInformationDataBase.netbox_host") {
+			conf.SensorInformationDB.NetboxHost = viper.GetString("SensorInformationDataBase.netbox_host")
+		}
+		if viper.IsSet("SensorInformationDataBase.netbox_port") {
+			conf.SensorInformationDB.NetboxPort = viper.GetInt("SensorInformationDataBase.netbox_port")
 		}
 		if viper.IsSet("SensorInformationDataBase.ncircc_url") {
 			conf.SensorInformationDB.NCIRCCURL = viper.GetString("SensorInformationDataBase.ncircc_url")
@@ -144,6 +153,17 @@ func New(rootDir string) (*ConfigApp, error) {
 		}
 		if viper.IsSet("WriteLogDataBase.storage_name_db") {
 			conf.LogDB.StorageNameDB = viper.GetString("WriteLogDataBase.storage_name_db")
+		}
+
+		// Настройки для отладочного сервера
+		if viper.IsSet("DebugServer.enable") {
+			conf.DebugServer.Enable = viper.GetBool("DebugServer.enable")
+		}
+		if viper.IsSet("DebugServer.host") {
+			conf.DebugServer.Host = viper.GetString("DebugServer.host")
+		}
+		if viper.IsSet("DebugServer.port") {
+			conf.DebugServer.Port = viper.GetInt("DebugServer.port")
 		}
 
 		return nil
@@ -218,27 +238,51 @@ func New(rootDir string) (*ConfigApp, error) {
 		conf.NATS.Subscription = envList["GO_ENRICHERSENSORINFO_NSUBSC"]
 	}
 
+	/*
+		+		"GO_ENRICHERSENSORINFO_ZHOST":       "",
+		+		"GO_ENRICHERSENSORINFO_ZUSER":       "",
+		+		"GO_ENRICHERSENSORINFO_NBHOST":      "",
+		+		"GO_ENRICHERSENSORINFO_NBPORT":      "",
+		+		"GO_ENRICHERSENSORINFO_NCIRCCURL":   "",
+		+		"GO_ENRICHERSENSORINFO_ZPASSWD":     "",
+		+		"GO_ENRICHERSENSORINFO_NBTOKEN":     "",
+		+		"GO_ENRICHERSENSORINFO_NCIRCCTOKEN": "",
+		+		"GO_ENRICHERSENSORINFO_RTIMEOUT":    "",
+	*/
+
 	//Подключение к БД с информацией о сенсорах
-	if envList["GO_ENRICHERSENSORINFO_SIHOST"] != "" {
-		conf.SensorInformationDB.Host = envList["GO_ENRICHERSENSORINFO_SIHOST"]
+	if envList["GO_ENRICHERSENSORINFO_ZHOST"] != "" {
+		conf.SensorInformationDB.ZabbixHost = envList["GO_ENRICHERSENSORINFO_ZHOST"]
 	}
-	if envList["GO_ENRICHERSENSORINFO_SIUSER"] != "" {
-		conf.SensorInformationDB.User = envList["GO_ENRICHERSENSORINFO_SIUSER"]
+	if envList["GO_ENRICHERSENSORINFO_ZUSER"] != "" {
+		conf.SensorInformationDB.ZabbixUser = envList["GO_ENRICHERSENSORINFO_ZUSER"]
 	}
 
-	if envList["GO_ENRICHERSENSORINFO_SIPASSWD"] != "" {
-		conf.SensorInformationDB.Passwd = envList["GO_ENRICHERSENSORINFO_SIPASSWD"]
+	if envList["GO_ENRICHERSENSORINFO_NBHOST"] != "" {
+		conf.SensorInformationDB.NetboxHost = envList["GO_ENRICHERSENSORINFO_NBHOST"]
 	}
-	if envList["GO_ENRICHERSENSORINFO_SIRTIMEOUT"] != "" {
-		if timeout, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_SIRTIMEOUT"]); err == nil {
-			conf.SensorInformationDB.RequestTimeout = timeout
+	if envList["GO_ENRICHERSENSORINFO_NBPORT"] != "" {
+		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_NBPORT"]); err == nil {
+			conf.SensorInformationDB.NetboxPort = p
 		}
 	}
-	if envList["GO_ENRICHERSENSORINFO_SINCIRCCURL"] != "" {
+
+	if envList["GO_ENRICHERSENSORINFO_NCIRCCURL"] != "" {
 		conf.SensorInformationDB.NCIRCCURL = envList["GO_ENRICHERSENSORINFO_SINCIRCCURL"]
 	}
-	if envList["GO_ENRICHERSENSORINFO_SINCIRCCTOKEN"] != "" {
-		conf.SensorInformationDB.NCIRCCToken = envList["GO_ENRICHERSENSORINFO_SINCIRCCTOKEN"]
+	if envList["GO_ENRICHERSENSORINFO_ZPASSWD"] != "" {
+		conf.SensorInformationDB.ZabbixPasswd = envList["GO_ENRICHERSENSORINFO_ZPASSWD"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_NBTOKEN"] != "" {
+		conf.SensorInformationDB.NetboxToken = envList["GO_ENRICHERSENSORINFO_NBTOKEN"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_NCIRCCTOKEN"] != "" {
+		conf.SensorInformationDB.NCIRCCToken = envList["GO_ENRICHERSENSORINFO_NCIRCCTOKEN"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_RTIMEOUT"] != "" {
+		if timeout, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_RTIMEOUT"]); err == nil {
+			conf.SensorInformationDB.RequestTimeout = timeout
+		}
 	}
 
 	//Настройки доступа к БД в которую будут записыватся логи

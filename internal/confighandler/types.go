@@ -6,6 +6,7 @@ type ConfigApp struct {
 	NATS                CfgNats
 	LogDB               CfgWriteLogDB
 	SensorInformationDB CfgSensorInformationDB
+	DebugServer         CfgDebugServer
 }
 
 // CfgCommon общие настройки
@@ -73,10 +74,19 @@ type CfgWriteLogDB struct {
 
 // CfgSensorInformationDB настройки подключения к БД с информацией о сенсорах
 type CfgSensorInformationDB struct {
-	User           string `yaml:"user"`
-	Passwd         string
+	ZabbixHost     string `yaml:"zabbix_host"`
+	ZabbixUser     string `yaml:"zabbix_user"`
+	ZabbixPasswd   string
 	NCIRCCURL      string `yaml:"ncircc_url"`
 	NCIRCCToken    string
-	Host           string `yaml:"host"`
+	NetboxToken    string
+	NetboxHost     string `yaml:"netbox_host"`
+	NetboxPort     int    `yaml:"netbox_port"`
 	RequestTimeout int    `validate:"gt=1,lt=45" yaml:"request_timeout"`
+}
+
+type CfgDebugServer struct {
+	Host   string `yaml:"host"`
+	Port   int    `validate:"gt=0,lte=65535" yaml:"port"`
+	Enable bool   `yaml:"enabled"`
 }
