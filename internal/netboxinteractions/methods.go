@@ -49,7 +49,7 @@ func (c *Client) GetDevicesLimitInformation(ctx context.Context, limit, offset i
 	return limitedInformation, statusCode, nil
 }
 
-// GetTenantGroups получить группу арендаторов устроства
+// GetTenantGroups получить группу арендаторов устройства
 func (c *Client) GetTenantGroups(ctx context.Context, deviceId int) (string, int, error) {
 	// получаем информацию по устройству
 	data, statusCode, err := c.Get(ctx, fmt.Sprintf("/api/dcim/devices/%d/", deviceId))
@@ -83,7 +83,9 @@ func (c *Client) GetTenantGroups(ctx context.Context, deviceId int) (string, int
 
 	tenantGroupId := struct {
 		Group struct {
-			Id int `json:"id"`
+			Id      int    `json:"id"`
+			Name    string `json:"name"`
+			Display string `json:"display"`
 		} `json:"group"`
 	}{}
 
@@ -91,25 +93,12 @@ func (c *Client) GetTenantGroups(ctx context.Context, deviceId int) (string, int
 		return "", statusCode, err
 	}
 
-	// получаем информацию по группе арендаторов
-	data, statusCode, err = c.Get(ctx, fmt.Sprintf("/api/tenancy/tenant-groups/%d/", tenantGroupId.Group.Id))
-	if err != nil {
-		return "", statusCode, err
+	tenantGroupName := "информация о группе арендаторов отсутствует"
+	if tenantGroupId.Group.Display != "" {
+		tenantGroupName = tenantGroupId.Group.Display
 	}
 
-	if statusCode != http.StatusOK {
-		return "", statusCode, fmt.Errorf("status code: %d (%s)", statusCode, http.StatusText(statusCode))
-	}
-
-	tenantGroupName := struct {
-		Name string `json:"name"`
-	}{}
-
-	if err := json.Unmarshal(data, &tenantGroupName); err != nil {
-		return "", statusCode, err
-	}
-
-	return tenantGroupName.Name, statusCode, nil
+	return tenantGroupName, statusCode, nil
 }
 
 // Get реализация HTTP GET запроса

@@ -39,11 +39,11 @@ func TestGetInformationAboutSensor(t *testing.T) {
 		var (
 			totalDevices int
 			countSteps   int = 1
-			devicesLimit int = 50
+			devicesLimit int = 350
 
 			// список id устройств
 			listId          []int    = []int{}
-			searchSensorsId []string = []string{"220065", "308051", "530007", "530013", "570027", "630019", "630062"}
+			searchSensorsId []string = []string{"220065", "308051", "310067", "530013", "570027", "630019", "630062", "8030015"}
 		)
 
 		t.Run("Тест 1.1. Получить общее количество устройств", func(t *testing.T) {
@@ -73,7 +73,7 @@ func TestGetInformationAboutSensor(t *testing.T) {
 			for step := range countSteps {
 				foundCountSteps++
 
-				data, statusCode, err := nbClient.GetDevicesLimitInformation(t.Context(), devicesLimit, step*devicesLimit)
+				devices, statusCode, err := nbClient.GetDevicesLimitInformation(t.Context(), devicesLimit, step*devicesLimit)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -84,11 +84,11 @@ func TestGetInformationAboutSensor(t *testing.T) {
 					// устройств могут не точно соответствовать искомому сенсору, например '570027 (48832465)'
 					// поэтому осуществляется поиск в срезе
 
-					for _, sensorId := range searchSensorsId {
-						if index := slices.IndexFunc(data.Results, func(device netboxinteractions.DeviceLimitedInformation) bool {
+					for _, device := range devices.Results {
+						if index := slices.IndexFunc(searchSensorsId, func(sensorId string) bool {
 							return strings.Contains(device.Name, sensorId)
 						}); index != -1 {
-							listId = append(listId, data.Results[index].Id)
+							listId = append(listId, devices.Results[index].Id)
 						}
 					}
 

@@ -46,5 +46,5 @@ type DbLogger interface {
 }
 
 type SensorInformationConnecter interface {
-	Search(ctx context.Context, inn string) (responses.DetailedInformation, error)
+	Search(ctx context.Context, sonsorsId []string) ([]responses.DetailedInformation, error)
 }

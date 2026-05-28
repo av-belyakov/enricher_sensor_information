@@ -4,49 +4,59 @@ import (
 	"context"
 	"regexp"
 
+	"github.com/goforj/godump"
+
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
 
 // Search поиск информации о сенсоре
-func (api *SensorInformationClient) Search(ctx context.Context, sensorId string) (responses.DetailedInformation, error) {
+func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []string) ([]responses.DetailedInformation, error) {
 	//авторизуемся в Zabbix
-	api.zabbixConn.Authorization(ctx)
-
-	//fmt.Println("func 'SensorInformationClient.Search', search sensor with id:", sensorId)
-	//fmt.Println("func 'SensorInformationClient.Search', поиск основной информации по сенсору в Zabbix")
-
-	//поиск основной информации по сенсору в Zabbix
-	commonInfo, err := zabbixinteractions.GetFullSensorInformation(ctx, sensorId, api.zabbixConn)
-	if err != nil {
-		return commonInfo, err
+	if err := api.zabbixConn.Authorization(ctx); err != nil {
+		return nil, err
 	}
 
-	commonInfo.SensorId = sensorId
-
-	reg, err := regexp.Compile(`^[0-9]+$`)
-	if err != nil {
-		return commonInfo, err
-	}
-
-	//поиск подробной информации об организации по её ИНН в НКЦКИ
-	if reg.MatchString(commonInfo.INN) {
-		innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, commonInfo.INN)
+	results := make([]responses.DetailedInformation, 0, len(sensorsId))
+	for _, sensorId := range sensorsId {
+		//поиск основной информации по сенсору в Zabbix
+		info, err := zabbixinteractions.GetFullSensorInformation(ctx, sensorId, api.zabbixConn)
 		if err != nil {
-			//fmt.Println("func 'SensorInformationClient.Search', ERROR:", err)
+			info.Error = err.Error()
 
-			return commonInfo, err
+			continue
 		}
 
-		if innInfo.Count == 0 {
-			return commonInfo, err
+		reg, err := regexp.Compile(`^[0-9]+$`)
+		if err != nil {
+			info.Error = err.Error()
+
+			continue
 		}
 
-		commonInfo.OrgName = innInfo.Data[0].Name
-		commonInfo.FullOrgName = innInfo.Data[0].Sname
+		//поиск подробной информации об организации по её ИНН в НКЦКИ
+		if reg.MatchString(info.INN) {
+			innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, info.INN)
+			if err != nil {
+				info.Error = err.Error()
+
+				continue
+			}
+
+			if innInfo.Count == 0 {
+				info.Error = "inn information was not found"
+
+				continue
+			}
+
+			info.OrgName = innInfo.Data[0].Name
+			info.FullOrgName = innInfo.Data[0].Sname
+		}
+
+		godump.Dump(info)
+
+		results = append(results, info)
 	}
 
-	//godump.Dump(commonInfo)
-
-	return commonInfo, err
+	return results, nil
 }

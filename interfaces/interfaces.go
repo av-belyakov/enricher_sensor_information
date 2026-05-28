@@ -53,5 +53,5 @@ type CommonTransmitter interface {
 //********** поиск информации ***********
 
 type Searcher interface {
-	Search(context.Context, string) (responses.DetailedInformation, error)
+	Search(context.Context, []string) ([]responses.DetailedInformation, error)
 }
