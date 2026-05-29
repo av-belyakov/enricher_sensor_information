@@ -1,6 +1,7 @@
 package sensorinformationapi
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -43,6 +44,11 @@ func TestGetFullSensorInformation(t *testing.T) {
 	result, err := siClient.Search(t.Context(), searchSensorsId)
 	assert.NoError(t, err)
 	assert.Greater(t, len(result), 0)
+
+	fmt.Println("Result")
+	for k, v := range result {
+		fmt.Printf("%d.\n\t%+v\n", k, v)
+	}
 
 	t.Cleanup(func() {
 		os.Unsetenv("GO_ENRICHERSENSORINFO_ZPASSWD")

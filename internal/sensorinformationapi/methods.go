@@ -109,7 +109,7 @@ func (api *SensorInformationClient) SearchCommonInformation(ctx context.Context,
 func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Context, sensorsId []string) ([]responses.DetailedInformation, error) {
 	var (
 		response   []responses.DetailedInformation = make([]responses.DetailedInformation, 0, len(sensorsId))
-		sensors    map[string]int
+		sensors    map[string]int                  = make(map[string]int, len(sensorsId))
 		countSteps int
 		errorList  error
 	)
