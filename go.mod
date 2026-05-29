@@ -6,6 +6,7 @@ require (
 	github.com/av-belyakov/enricher_geoip v0.0.0-20250618141817-662aee0b2dba
 	github.com/av-belyakov/simplelogger v0.0.0-20250924090323-6ab0607b4a4b
 	github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca
+	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/elastic/go-elasticsearch/v8 v8.19.6
 	github.com/go-playground/validator/v10 v10.30.2
 	github.com/goforj/godump v1.9.1

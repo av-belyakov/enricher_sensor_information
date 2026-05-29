@@ -108,7 +108,7 @@ func WithNetboxHost(v string) sensorInformationClientOptions {
 			return errors.New("the value of 'host' for Netbox cannot be empty")
 		}
 
-		sic.settings.zabbixHost = v
+		sic.settings.netboxHost = v
 
 		return nil
 	}

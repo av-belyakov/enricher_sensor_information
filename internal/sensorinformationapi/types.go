@@ -29,3 +29,7 @@ type SensorInformationSettings struct {
 
 // sensorInformationClientOptions функциональные параметры
 type sensorInformationClientOptions func(*SensorInformationClient) error
+
+type TenantGroupsInformation struct {
+	SiensorId, Display, Name string
+}

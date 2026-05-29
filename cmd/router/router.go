@@ -81,8 +81,9 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 	}
 
 	response := responses.Response{
-		TaskId: req.TaskId,
-		Source: req.Source,
+		TaskId:           req.TaskId,
+		Source:           req.Source,
+		FoundInformation: make([]responses.DetailedInformation, 0),
 	}
 
 	//поиск подробной информации о сенсорах
