@@ -136,7 +136,9 @@ func (d *DiContainer) NatsConnecter(ctx context.Context) NatsConnecter {
 func (d *DiContainer) SensorInformationDB() SensorInformationConnecter {
 	if d.sensorInformationDB == nil {
 		client, err := sensorinformationapi.New(
+			sensorinformationapi.WithZabbixUseTLS(d.Configer().GetSensorInformationDB().ZabbixUseTLS),
 			sensorinformationapi.WithZabbixHost(d.Configer().GetSensorInformationDB().ZabbixHost),
+			sensorinformationapi.WithZabbixPort(d.Configer().GetSensorInformationDB().ZabbixPort),
 			sensorinformationapi.WithZabbixUser(d.Configer().GetSensorInformationDB().ZabbixUser),
 			sensorinformationapi.WithZabbixPasswd(d.Configer().GetSensorInformationDB().ZabbixPasswd),
 			sensorinformationapi.WithNetboxHost(d.Configer().GetSensorInformationDB().NetboxHost),

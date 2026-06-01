@@ -21,8 +21,12 @@ func GetFullSensorInformation(ctx context.Context, sensorId string, zc *connecti
 		return fullInfo, err
 	}
 
+	println("++++ GetFullSensorInformation, GetSpecialId:", sensorInfo)
+
 	//специальный код сенсора, вся информация в Zabbix хранится именно с ним
 	fullInfo.SpecialSensorId = sensorInfo.GetSpecialId()
+
+	println("++++ GetFullSensorInformation, GetSpecialId:", sensorInfo)
 
 	//географический код объекта
 	geoCode, err := sensorInfo.GetGeoCode(ctx)

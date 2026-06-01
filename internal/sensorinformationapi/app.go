@@ -50,6 +50,9 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 			connectionjsonrpc.WithConnectionTimeout(api.settings.requestTimeout),
 		)
 	}
+	if err != nil {
+		return api, err
+	}
 	api.zabbixConn = zConn
 
 	//инициализация соединения с Netbox

@@ -2,7 +2,6 @@ package sensorinformationapi
 
 import (
 	"context"
-	"errors"
 	"math"
 	"net/http"
 	"regexp"
@@ -18,9 +17,6 @@ import (
 
 // Search поиск информации о сенсоре
 func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []string) ([]responses.DetailedInformation, error) {
-	// выполняем авторизацию
-	api.zabbixConn.AuthorizationStart(ctx)
-
 	// инициализируем общее хранилище
 	storage := NewInformationStorage(sensorsId)
 
@@ -28,14 +24,16 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 	// поиск основной информации в Zabbix и НКЦКИ
 	g.Go(func() error {
 		// авторизуемся в Zabbix
-		//if err := api.zabbixConn.Authorization(ctx); err != nil {
-		//	return err
-		//}
+		if err := api.zabbixConn.AuthorizationStart(ctx); err != nil {
+			return err
+		}
 
 		result, err := api.SearchCommonInformation(ctx, sensorsId)
 		for _, v := range result {
 			storage.Add(v)
 		}
+
+		println("-0000--- method 'SearchCommonInformation', Error:", err)
 
 		return err
 	})
@@ -46,19 +44,22 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 			storage.Add(v)
 		}
 
+		println("-1111--- method 'SearchAdditionalInformation', Error:", err)
+
 		return err
 	})
 
-	err := g.Wait()
+	if err := g.Wait(); err != nil {
+		return storage.GetList(), err
+	}
 
-	return storage.GetList(), err
+	return storage.GetList(), nil
 }
 
 // SearchCommonInformation поиск основной информации о сенсоре
 func (api *SensorInformationClient) SearchCommonInformation(ctx context.Context, sensorsId []string) ([]responses.DetailedInformation, error) {
 	var (
-		response  []responses.DetailedInformation = make([]responses.DetailedInformation, 0, len(sensorsId))
-		errorList error
+		response []responses.DetailedInformation = make([]responses.DetailedInformation, 0, len(sensorsId))
 	)
 
 	for _, sensorId := range sensorsId {
@@ -67,45 +68,63 @@ func (api *SensorInformationClient) SearchCommonInformation(ctx context.Context,
 			return response, ctx.Err()
 
 		default:
+			println("method 'SearchCommonInformation', sensorId:", sensorId, " get full sensor information")
+
+			res := responses.DetailedInformation{
+				SensorId: sensorId,
+			}
+
 			//поиск основной информации по сенсору в Zabbix
 			info, err := zabbixinteractions.GetFullSensorInformation(ctx, sensorId, api.zabbixConn)
 			if err != nil {
-				errorList = errors.Join(errorList, err)
+				res.Error = err.Error()
+				response = append(response, res)
 
 				continue
 			}
 
+			res.INN = info.INN
+			res.GeoCode = info.GeoCode
+			res.HomeNet = info.HomeNet
+			res.SensorId = info.SensorId
+			res.ObjectArea = info.ObjectArea
+			res.SpecialSensorId = info.SpecialSensorId
+			res.SubjectRussianFederation = info.SubjectRussianFederation
+
 			reg, err := regexp.Compile(`^[0-9]+$`)
 			if err != nil {
-				errorList = errors.Join(errorList, err)
+				res.Error = err.Error()
+				response = append(response, res)
 
 				continue
 			}
 
 			//поиск подробной информации об организации по её ИНН в НКЦКИ
-			if reg.MatchString(info.INN) {
+			if reg.MatchString(res.INN) {
 				innInfo, err := api.ncirccConn.GetFullNameOrganizationByINN(ctx, info.INN)
 				if err != nil {
-					errorList = errors.Join(errorList, err)
+					res.Error = err.Error()
+					response = append(response, res)
 
 					continue
 				}
 
 				if innInfo.Count == 0 {
-					errorList = errors.Join(errorList, errors.New("inn information was not found"))
+					res.Error = "inn information was not found"
+					response = append(response, res)
 
 					continue
 				}
 
-				info.OrgName = innInfo.Data[0].Name
-				info.FullOrgName = innInfo.Data[0].Sname
+				res.OrgName = innInfo.Data[0].Name
+				res.FullOrgName = innInfo.Data[0].Sname
 			}
 
-			response = append(response, info)
+			response = append(response, res)
 		}
 	}
 
-	return response, errorList
+	return response, nil
 }
 
 // SearchAdditionalInformation поиск информации в Netbox
@@ -114,11 +133,14 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 		response   []responses.DetailedInformation = make([]responses.DetailedInformation, 0, len(sensorsId))
 		sensors    map[string]int                  = make(map[string]int, len(sensorsId))
 		countSteps int
-		errorList  error
 	)
+
+	println("method 'SearchAdditionalInformation', sensorsId:", sensorsId)
 
 	countDevices, _, err := api.netboxConn.GetCountDevices(ctx)
 	if err != nil {
+		println("method 'SearchAdditionalInformation', 111 Error:", err)
+
 		return response, err
 	}
 
@@ -132,16 +154,20 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 	for step := range countSteps {
 		select {
 		case <-ctx.Done():
+			println("method 'SearchAdditionalInformation', 222 Error:", err)
+
 			return response, ctx.Err()
 
 		default:
+			println("method 'SearchAdditionalInformation', step:", step)
+
 			// получаем ограниченную информацию об устройствах, что бы получить внутренний id устройства
 			// который понадобится для запроса дополнительной информации об группе арендаторов
 			devices, statusCode, err := api.netboxConn.GetDevicesLimitInformation(ctx, constants.Devices_Limit, step*constants.Devices_Limit)
 			if err != nil {
-				errorList = errors.Join(errorList, err)
+				println("method 'SearchAdditionalInformation', 333 Error:", err)
 
-				continue
+				return response, err
 			}
 
 			if statusCode == http.StatusOK {
@@ -168,12 +194,19 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 	for sensorId, internalId := range sensors {
 		select {
 		case <-ctx.Done():
+			println("method 'SearchAdditionalInformation', 444 Error:", err)
+
 			return response, ctx.Err()
 
 		default:
+			println("method 'SearchAdditionalInformation', sensorId:", sensorId)
+
 			tenantsGroup, _, err := api.netboxConn.GetTenantGroups(ctx, internalId)
 			if err != nil {
-				errorList = errors.Join(errorList, err)
+				response = append(response, responses.DetailedInformation{
+					SensorId: sensorId,
+					Error:    err.Error(),
+				})
 
 				continue
 			}
@@ -185,5 +218,7 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 		}
 	}
 
-	return response, errorList
+	println("method 'SearchAdditionalInformation', Final Error:", err)
+
+	return response, nil
 }

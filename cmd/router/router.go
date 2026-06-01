@@ -89,14 +89,20 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 	//поиск подробной информации о сенсорах
 	foundInfo, err := r.commonInfo.Search(ctx, req.ListSensor)
 	if err != nil {
+		println("0000000 Error", err)
+
 		response.Error = err.Error()
 		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
 	} else {
 		r.logger.Send("info", fmt.Sprintf("task Id '%s', the search was completed successfully, sensors list:'%v'", req.TaskId, req.ListSensor))
 		godump.Dump(foundInfo)
-
-		response.FoundInformation = foundInfo
 	}
+
+	println("--------------------")
+	fmt.Printf("foundInfo:'%+v'\n", foundInfo)
+	println("--------------------")
+
+	response.FoundInformation = foundInfo
 
 	resByte, err := json.Marshal(response)
 	if err != nil {
