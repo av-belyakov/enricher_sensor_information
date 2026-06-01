@@ -20,29 +20,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	os.Unsetenv("GO_ENRICHERSENSORINFO_MAIN")
-
-	//Подключение к NATS
-	os.Unsetenv("GO_ENRICHERSENSORINFO_NHOST")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_NPORT")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_NSUBSC")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_NCACHETTL")
-
-	//Подключение к БД с информацией о сенсорах
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SIHOST")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SIUSER")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SIPASSWD")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SIRTIMEOUT")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SINCIRCCURL")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_SINCIRCCTOKEN")
-
-	//Настройки доступа к БД в которую будут записыватся логи
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGHOST")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGPORT")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGNAME")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGUSER")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGPASSWD")
-	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME")
+	unsetEnvVariables()
 
 	//загружаем ключи и пароли
 	if err := godotenv.Load("../../.env"); err != nil {
@@ -69,7 +47,9 @@ func TestConfigHandler(t *testing.T) {
 		})
 
 		t.Run("Тест 2. Проверка настройки SensorInformationDataBase из файла config_dev.yml", func(t *testing.T) {
+			assert.True(t, conf.GetSensorInformationDB().ZabbixUseTLS)
 			assert.Equal(t, conf.GetSensorInformationDB().ZabbixHost, "192.168.9.45")
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixPort, 443)
 			assert.Equal(t, conf.GetSensorInformationDB().ZabbixUser, "803.p.vishnitsky@avz-center.ru")
 			assert.Equal(t, conf.GetSensorInformationDB().NetboxHost, "netbox.cloud.gcm")
 			assert.Equal(t, conf.GetSensorInformationDB().NetboxPort, 8005)
@@ -110,7 +90,9 @@ func TestConfigHandler(t *testing.T) {
 		})
 
 		t.Run("Тест 2. Проверка настройки базы данных с информацией о сенсорах", func(t *testing.T) {
+			zUseTLS := "true"
 			zhost := "127.0.0.1"
+			zport := "4343"
 			zuser := "CherryTiggo"
 			nhost := "netbox.cloudhost"
 			nport := "7562"
@@ -120,7 +102,9 @@ func TestConfigHandler(t *testing.T) {
 			ncircctoken := "fa932bca82"
 			rtimeout := "10"
 
+			os.Setenv("GO_ENRICHERSENSORINFO_ZUSETLS", zUseTLS)
 			os.Setenv("GO_ENRICHERSENSORINFO_ZHOST", zhost)
+			os.Setenv("GO_ENRICHERSENSORINFO_ZPORT", zport)
 			os.Setenv("GO_ENRICHERSENSORINFO_ZUSER", zuser)
 			os.Setenv("GO_ENRICHERSENSORINFO_NBHOST", nhost)
 			os.Setenv("GO_ENRICHERSENSORINFO_NBPORT", nport)
@@ -133,9 +117,12 @@ func TestConfigHandler(t *testing.T) {
 			assert.NoError(t, err)
 
 			netboxPort, _ := strconv.Atoi(nport)
+			zabbixPort, _ := strconv.Atoi(zport)
 			requestTimeout, _ := strconv.Atoi(rtimeout)
 
+			assert.True(t, conf.GetSensorInformationDB().ZabbixUseTLS)
 			assert.Equal(t, conf.GetSensorInformationDB().ZabbixHost, zhost)
+			assert.Equal(t, conf.GetSensorInformationDB().ZabbixPort, zabbixPort)
 			assert.Equal(t, conf.GetSensorInformationDB().ZabbixUser, zuser)
 			assert.Equal(t, conf.GetSensorInformationDB().ZabbixPasswd, zpasswd)
 			assert.Equal(t, conf.GetSensorInformationDB().NCIRCCURL, ncirccurl)
@@ -165,4 +152,46 @@ func TestConfigHandler(t *testing.T) {
 			assert.Equal(t, conf.GetLogDB().StorageNameDB, "log_storage")
 		})
 	})
+
+	t.Cleanup(func() {
+		unsetEnvVariables()
+	})
+}
+
+func unsetEnvVariables() {
+	os.Unsetenv("GO_ENRICHERSENSORINFO_MAIN")
+
+	//Подключение к NATS
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NHOST")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NPORT")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NSUBSC")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NCACHETTL")
+
+	//Подключение к БД с информацией о сенсорах
+	os.Unsetenv("GO_ENRICHERSENSORINFO_ZUSETLS")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_ZHOST")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_ZPORT")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_ZUSER")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NBHOST")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NBPORT")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NCIRCCURL")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_ZPASSWD")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NBTOKEN")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_NCIRCCTOKEN")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_RTIMEOUT")
+
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SIHOST")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SIUSER")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SIPASSWD")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SIRTIMEOUT")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SINCIRCCURL")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_SINCIRCCTOKEN")
+
+	//Настройки доступа к БД в которую будут записыватся логи
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGHOST")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGPORT")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGNAME")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGUSER")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGPASSWD")
+	os.Unsetenv("GO_ENRICHERSENSORINFO_DBWLOGSTORAGENAME")
 }
