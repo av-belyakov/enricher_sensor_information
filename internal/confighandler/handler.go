@@ -29,7 +29,9 @@ func New(rootDir string) (*ConfigApp, error) {
 			"GO_ENRICHERSENSORINFO_NCACHETTL": "",
 
 			//Подключение к БД с информацией о сенсорах
+			"GO_ENRICHERSENSORINFO_ZUSETLS":     "",
 			"GO_ENRICHERSENSORINFO_ZHOST":       "",
+			"GO_ENRICHERSENSORINFO_ZPORT":       "",
 			"GO_ENRICHERSENSORINFO_ZUSER":       "",
 			"GO_ENRICHERSENSORINFO_NBHOST":      "",
 			"GO_ENRICHERSENSORINFO_NBPORT":      "",
@@ -119,8 +121,14 @@ func New(rootDir string) (*ConfigApp, error) {
 		}
 
 		// Настройки доступа к базам обогащения дополнительной информацией
+		if viper.IsSet("SensorInformationDataBase.zabbix_use_tls") {
+			cfg.SensorInformationDB.ZabbixUseTLS = viper.GetBool("SensorInformationDataBase.zabbix_use_tls")
+		}
 		if viper.IsSet("SensorInformationDataBase.zabbix_host") {
 			cfg.SensorInformationDB.ZabbixHost = viper.GetString("SensorInformationDataBase.zabbix_host")
+		}
+		if viper.IsSet("SensorInformationDataBase.zabbix_port") {
+			cfg.SensorInformationDB.ZabbixPort = viper.GetInt("SensorInformationDataBase.zabbix_port")
 		}
 		if viper.IsSet("SensorInformationDataBase.zabbix_user") {
 			cfg.SensorInformationDB.ZabbixUser = viper.GetString("SensorInformationDataBase.zabbix_user")
@@ -246,8 +254,20 @@ func New(rootDir string) (*ConfigApp, error) {
 	if envList["GO_ENRICHERSENSORINFO_ZHOST"] != "" {
 		cfg.SensorInformationDB.ZabbixHost = envList["GO_ENRICHERSENSORINFO_ZHOST"]
 	}
+	if envList["GO_ENRICHERSENSORINFO_ZPORT"] != "" {
+		if p, err := strconv.Atoi(envList["GO_ENRICHERSENSORINFO_ZPORT"]); err == nil {
+			cfg.SensorInformationDB.ZabbixPort = p
+		}
+	}
 	if envList["GO_ENRICHERSENSORINFO_ZUSER"] != "" {
 		cfg.SensorInformationDB.ZabbixUser = envList["GO_ENRICHERSENSORINFO_ZUSER"]
+	}
+	if envList["GO_ENRICHERSENSORINFO_ZUSETLS"] != "" {
+		if envList["GO_ENRICHERSENSORINFO_ZUSETLS"] == "true" {
+			cfg.SensorInformationDB.ZabbixUseTLS = true
+		} else {
+			cfg.SensorInformationDB.ZabbixUseTLS = false
+		}
 	}
 
 	if envList["GO_ENRICHERSENSORINFO_NBHOST"] != "" {

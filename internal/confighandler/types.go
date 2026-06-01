@@ -83,6 +83,8 @@ type CfgSensorInformationDB struct {
 	NetboxHost     string `yaml:"netbox_host"`
 	NetboxPort     int    `yaml:"netbox_port"`
 	RequestTimeout int    `validate:"gt=1,lt=45" yaml:"request_timeout"`
+	ZabbixPort     int    `validate:"gt=0,lte=65535" yaml:"port"`
+	ZabbixUseTLS   bool   `yaml:"zabbix_use_tls"`
 }
 
 type CfgDebugServer struct {
