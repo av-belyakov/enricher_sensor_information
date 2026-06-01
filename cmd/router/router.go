@@ -92,9 +92,9 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 		response.Error = err.Error()
 		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
 	} else {
-		//fmt.Println("func 'Router.handlerRequest', result:")
-		//godump.Dump(results)
-		r.logger.Send("info", fmt.Sprintf("task Id '%s', result:'%s'", req.TaskId, godump.DumpStr(foundInfo)))
+		r.logger.Send("info", fmt.Sprintf("task Id '%s', the search was completed successfully, sensors list:'%v'", req.TaskId, req.ListSensor))
+		godump.Dump(foundInfo)
+
 		response.FoundInformation = foundInfo
 	}
 

@@ -39,6 +39,7 @@ type SensorInformation struct {
 	OrganizationName         string `json:"organization_name"`
 	FullOrganizationName     string `json:"full_organization_name"`
 	SubjectRussianFederation string `json:"subject_russian_federation"`
+	NetboxTenantGroup        string `json:"netbox_tenant_group"` //группа арендаторов по netbox (альтернативная сфера деятельности объекта, может отличатся от object_area)
 	Error                    string `json:"error"`
 }
 
@@ -99,6 +100,8 @@ func TestGetSensorCommonInfo(t *testing.T) {
 		}`))
 
 	assert.NotNil(t, msg)
+
+	fmt.Println("Message:", string(msg.Data))
 
 	res := ResponseData{}
 	if msg != nil {

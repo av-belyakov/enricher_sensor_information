@@ -19,6 +19,7 @@ require (
 )
 
 require (
+	github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.6 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
