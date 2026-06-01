@@ -21,14 +21,14 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 	// инициализируем общее хранилище
 	storage := NewInformationStorage(sensorsId)
 
-	// авторизуемся в Zabbix
-	if err := api.zabbixConn.Authorization(ctx); err != nil {
-		return storage.GetList(), err
-	}
-
 	var g errgroup.Group
 	// поиск основной информации в Zabbix и НКЦКИ
 	g.Go(func() error {
+		// авторизуемся в Zabbix
+		if err := api.zabbixConn.Authorization(ctx); err != nil {
+			return err
+		}
+
 		result, err := api.SearchCommonInformation(ctx, sensorsId)
 		for _, v := range result {
 			storage.Add(v)
