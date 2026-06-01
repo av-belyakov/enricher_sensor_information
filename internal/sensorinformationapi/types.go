@@ -1,15 +1,16 @@
 package sensorinformationapi
 
 import (
+	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionjsonrpc"
+
 	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
 	"github.com/av-belyakov/enricher_sensor_information/internal/netboxinteractions"
-	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
 
 // SensorInformationClient клиент для взаимодействия с API
 type SensorInformationClient struct {
 	ncirccConn *ncirccinteractions.ClientNICRCC
-	zabbixConn *zabbixinteractions.ZabbixConnectionJsonRPC
+	zabbixConn *connectionjsonrpc.ZabbixConnectionJsonRPC
 	netboxConn *netboxinteractions.Client
 	settings   SensorInformationSettings
 }
@@ -24,7 +25,9 @@ type SensorInformationSettings struct {
 	netboxToken    string
 	netboxHost     string
 	netboxPort     int
+	zabbixPort     int
 	requestTimeout int
+	zabbixUseTLS   bool
 }
 
 // sensorInformationClientOptions функциональные параметры

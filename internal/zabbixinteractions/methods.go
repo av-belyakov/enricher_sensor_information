@@ -96,7 +96,7 @@ func (sid *RequiestSensorInfo) GetHomeNet(ctx context.Context) (string, error) {
 
 // sendRequest передача запроса API
 func (sid *RequiestSensorInfo) sendRequest(ctx context.Context, str string) (string, error) {
-	res, err := sid.zabbixConnection.PostRequest(ctx, strings.NewReader(str))
+	res, err := sid.zabbixConnection.SendRequest(ctx, strings.NewReader(str))
 	if err != nil {
 		return "", supportingfunctions.CustomError(err)
 	}

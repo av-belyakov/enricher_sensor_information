@@ -4,8 +4,8 @@ github.com/av-belyakov/simplelogger v0.0.0-20250924090323-6ab0607b4a4b h1:axOJ0O
 github.com/av-belyakov/simplelogger v0.0.0-20250924090323-6ab0607b4a4b/go.mod h1:yW2ev3nXPP3WY8svBWJpg4PQRl67MTGIaaiXJ0ULRZ8=
 github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca h1:10CiLYaxxDD9524HYACXxEIjQY/UzochnUi0vGiL3ao=
 github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca/go.mod h1:PVChkORj00O8/xSQ0UrJihm/dU+9gvdRddi+DtwAnOs=
-github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.6 h1:kJHaX88Rpo7j9uAgESB01Y87rp8OdNAnBmcu2hK2RUU=
-github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.6/go.mod h1:RCRL0wh7Jk227ZJL+VetL//duYCdEGHkTON4IBFVWqs=
+github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.7 h1:JfO8QLIqjyMSUmc0fgUSt1WSzy90XpZXiaMskixYYzk=
+github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.7/go.mod h1:RCRL0wh7Jk227ZJL+VetL//duYCdEGHkTON4IBFVWqs=
 github.com/brianvoe/gofakeit/v7 v7.15.0 h1:kGLYAWN8tnmxq2PelKVK6zwpM7kMxdz9SGPH31mFkNs=
 github.com/brianvoe/gofakeit/v7 v7.15.0/go.mod h1:QXuPeBw164PJCzCUZVmgpgHJ3Llj49jSLVkKPMtxtxA=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=

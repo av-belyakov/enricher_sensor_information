@@ -1,21 +1,6 @@
 package zabbixinteractions
 
-import (
-	"cmp"
-	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"net/http"
-	"strings"
-	"time"
-
-	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionjsonrpc"
-
-	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
-)
-
+/*
 // NewZabbixConnectionJsonRPC создает объект соединения с Zabbix API
 func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*connectionjsonrpc.ZabbixConnectionJsonRPC, error) {
 	var (
@@ -33,52 +18,27 @@ func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*conn
 		return zabbixConn, supportingfunctions.CustomError(errors.New("the value 'host' should not be empty"))
 	}
 
-	/*
-		client := &http.Client{
-			Transport: &http.Transport{
-				MaxIdleConns:        10,
-				IdleConnTimeout:     connTimeout,
-				MaxIdleConnsPerHost: 10,
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: true,
-					RootCAs:            x509.NewCertPool(),
-				},
-			},
-			Timeout: 15 * time.Second,
-		}
-	*/
-
-	if cfg.GetZabbix().UseTLS {
+	if settings.UseTLS {
 		zabbixConn, err = connectionjsonrpc.NewConnect(
 			connectionjsonrpc.WithTLS(),
 			connectionjsonrpc.WithInsecureSkipVerify(),
 			connectionjsonrpc.WithHost(settings.Host),
-			connectionjsonrpc.WithPort(settings. .Port),
-			connectionjsonrpc.WithLogin(cfg.GetZabbix().User),
-			connectionjsonrpc.WithPasswd(cfg.GetAuthenticationData().ZabbixPasswd),
-			connectionjsonrpc.WithConnectionTimeout(cmp.Or(cfg.GetZabbix().Timeout, connTimeout)),
+			connectionjsonrpc.WithPort(settings.Port),
+			connectionjsonrpc.WithLogin(settings.Login),
+			connectionjsonrpc.WithPasswd(settings.Passwd),
+			connectionjsonrpc.WithConnectionTimeout(cmp.Or(settings.ConnectionTimeout, connTimeout)),
 		)
 	} else {
 		zabbixConn, err = connectionjsonrpc.NewConnect(
-			connectionjsonrpc.WithHost(cfg.GetZabbix().Host),
-			connectionjsonrpc.WithPort(cfg.GetZabbix().Port),
-			connectionjsonrpc.WithLogin(cfg.GetZabbix().User),
-			connectionjsonrpc.WithPasswd(cfg.GetAuthenticationData().ZabbixPasswd),
+			connectionjsonrpc.WithHost(settings.Host),
+			connectionjsonrpc.WithPort(settings.Port),
+			connectionjsonrpc.WithLogin(settings.Login),
+			connectionjsonrpc.WithPasswd(settings.Passwd),
 			connectionjsonrpc.WithConnectionTimeout(cmp.Or(cfg.GetZabbix().Timeout, connTimeout)),
 		)
 	}
 
 	return zabbixConn, err
-	/*
-		return &ZabbixConnectionJsonRPC{
-			url:             fmt.Sprintf("https://%s/api_jsonrpc.php", settings.Host),
-			host:            settings.Host,
-			login:           settings.Login,
-			passwd:          settings.Passwd,
-			applicationType: "application/json-rpc",
-			connClient:      client,
-		}, nil
-	*/
 }
 
 // Authorization запрос к Zabbix с целью получения хеша авторизации необходимого для
@@ -155,3 +115,4 @@ func (zc *ZabbixConnectionJsonRPC) PostRequest(ctx context.Context, data *string
 
 	return resBody, nil
 }
+*/

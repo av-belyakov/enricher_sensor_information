@@ -7,7 +7,7 @@ SensorInformationDataBase:
   zabbix_use_tls: false # Использовать TLS для подключения к Zabbix
   zabbix_host: 192.168.9.45
   zabbix_port: 443
-  zabbix_user: 803.p.vishnitsky@avz-center.ru
+  zabbix_user: 803.a.belyakov@avz-center.ru
   netbox_host: netbox.cloud.gcm
   netbox_port: 8005
   ncircc_url: https://10.0.227.10/api/v2/companies

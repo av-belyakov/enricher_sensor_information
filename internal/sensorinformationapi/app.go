@@ -4,13 +4,20 @@ import (
 	"errors"
 	"time"
 
+	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionjsonrpc"
+
 	"github.com/av-belyakov/enricher_sensor_information/internal/ncirccinteractions"
 	"github.com/av-belyakov/enricher_sensor_information/internal/netboxinteractions"
-	"github.com/av-belyakov/enricher_sensor_information/internal/zabbixinteractions"
 )
 
 // New настраивает новый модуль взаимодействия с API
 func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, error) {
+	var (
+		zConn *connectionjsonrpc.ZabbixConnectionJsonRPC
+
+		err error
+	)
+
 	api := &SensorInformationClient{
 		settings: SensorInformationSettings{
 			requestTimeout: 10,
@@ -24,15 +31,24 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	}
 
 	//инициализация соединения с Zabbix
-	zConn, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
-		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
-			Host:              api.settings.zabbixHost,
-			Login:             api.settings.zabbixUser,
-			Passwd:            api.settings.zabbixPasswd,
-			ConnectionTimeout: time.Duration(api.settings.requestTimeout) * time.Second,
-		})
-	if err != nil {
-		return api, err
+	if api.settings.zabbixUseTLS {
+		zConn, err = connectionjsonrpc.NewConnect(
+			connectionjsonrpc.WithTLS(),
+			connectionjsonrpc.WithInsecureSkipVerify(),
+			connectionjsonrpc.WithHost(api.settings.zabbixHost),
+			connectionjsonrpc.WithPort(api.settings.zabbixPort),
+			connectionjsonrpc.WithLogin(api.settings.zabbixUser),
+			connectionjsonrpc.WithPasswd(api.settings.zabbixPasswd),
+			connectionjsonrpc.WithConnectionTimeout(api.settings.requestTimeout),
+		)
+	} else {
+		zConn, err = connectionjsonrpc.NewConnect(
+			connectionjsonrpc.WithHost(api.settings.zabbixHost),
+			connectionjsonrpc.WithPort(api.settings.zabbixPort),
+			connectionjsonrpc.WithLogin(api.settings.zabbixUser),
+			connectionjsonrpc.WithPasswd(api.settings.zabbixPasswd),
+			connectionjsonrpc.WithConnectionTimeout(api.settings.requestTimeout),
+		)
 	}
 	api.zabbixConn = zConn
 
@@ -62,6 +78,15 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 	return api, nil
 }
 
+// WithZabbixUseTLS использовать ли протокол TLS для доступа к серверу Zabbix
+func WithZabbixUseTLS(v bool) sensorInformationClientOptions {
+	return func(sic *SensorInformationClient) error {
+		sic.settings.zabbixUseTLS = v
+
+		return nil
+	}
+}
+
 // WithZabbixHost имя или ip адрес сервера Zabbix
 func WithZabbixHost(v string) sensorInformationClientOptions {
 	return func(sic *SensorInformationClient) error {
@@ -70,6 +95,19 @@ func WithZabbixHost(v string) sensorInformationClientOptions {
 		}
 
 		sic.settings.zabbixHost = v
+
+		return nil
+	}
+}
+
+// WithZabbixPort порт сервера Zabbix
+func WithZabbixPort(v int) sensorInformationClientOptions {
+	return func(sic *SensorInformationClient) error {
+		if v <= 0 || v > 65535 {
+			return errors.New("an incorrect network port value was received")
+		}
+
+		sic.settings.zabbixPort = v
 
 		return nil
 	}

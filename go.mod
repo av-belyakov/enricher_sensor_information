@@ -6,6 +6,7 @@ require (
 	github.com/av-belyakov/enricher_geoip v0.0.0-20250618141817-662aee0b2dba
 	github.com/av-belyakov/simplelogger v0.0.0-20250924090323-6ab0607b4a4b
 	github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca
+	github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.7
 	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/elastic/go-elasticsearch/v8 v8.19.6
 	github.com/go-playground/validator/v10 v10.30.2
@@ -19,7 +20,6 @@ require (
 )
 
 require (
-	github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.6 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect

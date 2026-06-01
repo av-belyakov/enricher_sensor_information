@@ -18,6 +18,9 @@ import (
 
 // Search поиск информации о сенсоре
 func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []string) ([]responses.DetailedInformation, error) {
+	// выполняем авторизацию
+	api.zabbixConn.AuthorizationStart(ctx)
+
 	// инициализируем общее хранилище
 	storage := NewInformationStorage(sensorsId)
 
@@ -25,9 +28,9 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 	// поиск основной информации в Zabbix и НКЦКИ
 	g.Go(func() error {
 		// авторизуемся в Zabbix
-		if err := api.zabbixConn.Authorization(ctx); err != nil {
-			return err
-		}
+		//if err := api.zabbixConn.Authorization(ctx); err != nil {
+		//	return err
+		//}
 
 		result, err := api.SearchCommonInformation(ctx, sensorsId)
 		for _, v := range result {

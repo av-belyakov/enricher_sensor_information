@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"time"
+
+	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionjsonrpc"
 )
 
 // ZabbixAuthorizationData результат авторизации
@@ -36,6 +38,8 @@ type SettingsZabbixConnectionJsonRPC struct {
 	Host              string
 	Login             string
 	Passwd            string
+	Port              int
+	UseTLS            bool
 }
 
 type HandlerZabbixConnection struct {
@@ -91,7 +95,7 @@ type DataZabbix struct {
 }
 
 type RequiestSensorInfo struct {
-	zabbixConnection *ZabbixConnectionJsonRPC
+	zabbixConnection *connectionjsonrpc.ZabbixConnectionJsonRPC
 	specialId        string
 }
 
