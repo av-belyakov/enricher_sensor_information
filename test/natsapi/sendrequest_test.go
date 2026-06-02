@@ -17,9 +17,9 @@ const (
 	NATS_HOST = "192.168.9.208"
 	NATS_PORT = 4222
 
-	CACHETTL = 360
-	//SUBSCRIPTION = "object.sensorinforeq.test"
-	SUBSCRIPTION = "object.sensor-info-request.test"
+	CACHETTL     = 360
+	SUBSCRIPTION = "object.sensorinforeq.test"
+	//SUBSCRIPTION = "object.sensor-info-request.test"
 )
 
 type ResponseData struct {
@@ -39,6 +39,7 @@ type SensorInformation struct {
 	OrganizationName         string `json:"organization_name"`
 	FullOrganizationName     string `json:"full_organization_name"`
 	SubjectRussianFederation string `json:"subject_russian_federation"`
+	NetboxTenantGroup        string `json:"netbox_tenant_group"` //группа арендаторов по netbox (альтернативная сфера деятельности объекта, может отличатся от object_area)
 	Error                    string `json:"error"`
 }
 
@@ -95,7 +96,7 @@ func TestGetSensorCommonInfo(t *testing.T) {
 	msg, err := nc.RequestWithContext(t.Context(), SUBSCRIPTION, []byte(`{
 			"source": "source for testing",
 	  		"task_id": "41af7c2b34",
-	   		"list_sensors": ["8030073", "8030141", "8030017", "310073"]
+	   		"list_sensors": ["8030073", "8030141", "8030017", "310073", "310067", "530013", "570027", "630019"]
 		}`))
 
 	assert.NotNil(t, msg)

@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionzabbixagent"
+	zainterfaces "github.com/av-belyakov/zabbixapicommunicator/v2/interfaces"
+
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
-	zabbixapicommunicator "github.com/av-belyakov/zabbixapicommunicator/cmd"
 )
 
 // WrappersZabbixInteraction обёртка для взаимодействия с модулем zabbixapi
@@ -18,7 +20,7 @@ func WrappersZabbixInteraction(
 	channelZabbix <-chan interfaces.Messager) {
 
 	connTimeout := time.Duration(3 * time.Second)
-	zc, err := zabbixapicommunicator.New(zabbixapicommunicator.SettingsZabbixConnection{
+	zc, err := connectionzabbixagent.New(connectionzabbixagent.SettingsZabbixConnection{
 		Port:              settings.NetworkPort,
 		Host:              settings.NetworkHost,
 		NetProto:          "tcp",
@@ -31,20 +33,20 @@ func WrappersZabbixInteraction(
 		return
 	}
 
-	et := make([]zabbixapicommunicator.EventType, len(settings.EventTypes))
+	et := make([]connectionzabbixagent.EventType, len(settings.EventTypes))
 	for _, v := range settings.EventTypes {
-		et = append(et, zabbixapicommunicator.EventType{
+		et = append(et, connectionzabbixagent.EventType{
 			IsTransmit: v.IsTransmit,
 			EventType:  v.EventType,
 			ZabbixKey:  v.ZabbixKey,
-			Handshake: zabbixapicommunicator.Handshake{
+			Handshake: connectionzabbixagent.Handshake{
 				TimeInterval: v.Handshake.TimeInterval,
 				Message:      v.Handshake.Message,
 			},
 		})
 	}
 
-	recipient := make(chan zabbixapicommunicator.Messager)
+	recipient := make(chan zainterfaces.Messager)
 	if err = zc.Start(ctx, et, recipient); err != nil {
 		logging.Write("error", supportingfunctions.CustomError(fmt.Errorf("zabbix module: %w", err)).Error())
 
@@ -58,7 +60,7 @@ func WrappersZabbixInteraction(
 				return
 
 			case msg := <-channelZabbix:
-				newMessageSettings := &zabbixapicommunicator.MessageSettings{}
+				newMessageSettings := &connectionzabbixagent.MessageSettings{}
 				newMessageSettings.SetType(msg.GetType())
 				newMessageSettings.SetMessage(msg.GetMessage())
 

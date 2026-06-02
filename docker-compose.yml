@@ -1,6 +1,6 @@
-version: "3.4" #такая версия подходит для старых ranner 
+version: "3.4" #такая версия подходит для старых ranner
 # Что бы передать переменные при запуске docker-compose.yml файда нужно
-# выполнить: 
+# выполнить:
 # TYPE_IMAGE=lates \
 # TYPE_EXECUTION=some_type_exec \
 # docker-compose -f docker-compose.example.yml up -d
@@ -10,14 +10,15 @@ services:
     container_name: enricher_sensor_information.$TYPE_EXECUTION
     environment:
       - GO_ENRICHERSENSORINFO_DBWLOGPASSWD=$ESENSORINFO_DBWLOGPASSWD
-      - GO_ENRICHERSENSORINFO_SIPASSWD=$ESENSORINFO_SIPASSWD
-      - GO_ENRICHERSENSORINFO_SINCIRCCTOKEN=$ESENSORINFO_SINCIRCCTOKEN
+      - GO_ENRICHERSENSORINFO_ZPASSWD=$ESENSORINFO_ZPASSWD
+      - GO_ENRICHERSENSORINFO_NBTOKEN=$ESENSORINFO_NBTOKEN
+      - GO_ENRICHERSENSORINFO_NCIRCCTOKEN=$ESENSORINFO_NCIRCCTOKEN
     image: gitlab.cloud.gcm:5050/a.belyakov/enricher_sensor_information:$TYPE_IMAGE
     restart: unless-stopped
     # пробрасываем user ID для корректной записи в логов
     user: root
     command: chmod 777 /opt/enricher_sensor_information/logs && \
-             chown 1500:1500 /opt/enricher_sensor_information/logs
+      chown 1500:1500 /opt/enricher_sensor_information/logs
     volumes:
       - /var/log/enricher_sensor_information.$TYPE_EXECUTION:/opt/enricher_sensor_information/logs:rw
       - ./config:/opt/enricher_sensor_information/config:rw

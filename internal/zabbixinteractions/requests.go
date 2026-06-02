@@ -7,26 +7,18 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/av-belyakov/zabbixapicommunicator/v2/cmd/connectionjsonrpc"
+
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
 )
 
 // GetFullSensorInformation полная информация о сенсоре
-func GetFullSensorInformation(ctx context.Context, sensorId string, zc *ZabbixConnectionJsonRPC) (responses.DetailedInformation, error) {
+func GetFullSensorInformation(ctx context.Context, sensorId string, zc *connectionjsonrpc.ZabbixConnectionJsonRPC) (responses.DetailedInformation, error) {
 	fullInfo := responses.DetailedInformation{SensorId: sensorId}
 	sensorInfo, err := GetSpecialId(ctx, sensorId, zc)
 	if err != nil {
-		//при возникновении ошибки пытаемся авторизоватся повторно, так как при устаревании
-		//авторизационного хеша возможно появления ошибки с сообщением: 'Invalid params. Session terminated, re-login, please.'.
-		err = zc.Authorization(ctx)
-		if err != nil {
-			return fullInfo, err
-		}
-
-		sensorInfo, err = GetSpecialId(ctx, sensorId, zc)
-		if err != nil {
-			return fullInfo, err
-		}
+		return fullInfo, err
 	}
 
 	//специальный код сенсора, вся информация в Zabbix хранится именно с ним
@@ -71,7 +63,7 @@ func GetFullSensorInformation(ctx context.Context, sensorId string, zc *ZabbixCo
 }
 
 // GetSpecialId объект со специальным id сенсора который нужен для подробных запросов
-func GetSpecialId(ctx context.Context, sensorId string, zc *ZabbixConnectionJsonRPC) (*RequiestSensorInfo, error) {
+func GetSpecialId(ctx context.Context, sensorId string, zc *connectionjsonrpc.ZabbixConnectionJsonRPC) (*RequiestSensorInfo, error) {
 	req := RequiestSensorInfo{zabbixConnection: zc}
 	strReq := fmt.Sprintf(`{
 	  "jsonrpc":"2.0",
@@ -86,7 +78,7 @@ func GetSpecialId(ctx context.Context, sensorId string, zc *ZabbixConnectionJson
 		return &req, supportingfunctions.CustomError(errors.New("the sensor ID cannot be equal to 0"))
 	}
 
-	res, err := zc.PostRequest(ctx, strings.NewReader(strReq))
+	res, err := zc.SendRequest(ctx, strings.NewReader(strReq))
 	if err != nil {
 		return &req, supportingfunctions.CustomError(fmt.Errorf("error send post request, %w", err))
 	}

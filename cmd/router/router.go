@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/av-belyakov/enricher_sensor_information/cmd/natsapi"
+	"github.com/goforj/godump"
+
 	"github.com/av-belyakov/enricher_sensor_information/interfaces"
+	"github.com/av-belyakov/enricher_sensor_information/internal/natsapi"
 	"github.com/av-belyakov/enricher_sensor_information/internal/requests"
 	"github.com/av-belyakov/enricher_sensor_information/internal/responses"
 	"github.com/av-belyakov/enricher_sensor_information/internal/supportingfunctions"
-	"github.com/goforj/godump"
 )
 
 // NewRouter инициализация маршрутизатора
@@ -56,12 +57,13 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 			    }`
 
 	var req requests.Request
+	obt := natsapi.ObjectBeingTransferred{Id: msg.GetId()}
+
 	if err := json.Unmarshal(msg.GetData(), &req); err != nil {
+		obt.Data = fmt.Appendf(nil, strJson, "the request received an incorrect json format")
 		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
-		r.chToNatsApi <- &natsapi.ObjectBeingTransferred{
-			Id:   msg.GetId(),
-			Data: fmt.Appendf(nil, strJson, "the request received an incorrect json format"),
-		}
+
+		r.chToNatsApi <- &obt
 
 		return
 	}
@@ -70,54 +72,41 @@ func (r *Router) handlerRequest(ctx context.Context, msg interfaces.Requester) {
 
 	if len(req.ListSensor) == 0 {
 		errMsg := "it is impossible to perform a search, an empty list of sensors is received"
+		obt.Data = fmt.Appendf(nil, strJson, errMsg)
 		r.logger.Send("error", supportingfunctions.CustomError(errors.New(errMsg)).Error())
-		r.chToNatsApi <- &natsapi.ObjectBeingTransferred{
-			Id:   msg.GetId(),
-			Data: fmt.Appendf(nil, strJson, errMsg),
-		}
+
+		r.chToNatsApi <- &obt
 
 		return
 	}
 
-	results := make([]responses.DetailedInformation, 0, len(req.ListSensor))
-	for _, sensor := range req.ListSensor {
-		//поиск подробной информации о сенсоре
-		res, err := r.commonInfo.Search(ctx, sensor)
-		if err != nil {
-			//fmt.Println("func 'Router.handlerRequest', ERROR:", err)
-
-			res.Error = "error interacting with a remote database"
-			r.logger.Send("error", supportingfunctions.CustomError(err).Error())
-		}
-
-		res.SensorId = sensor
-		results = append(results, res)
-	}
-
-	//fmt.Println("func 'Router.handlerRequest', result:")
-	//godump.Dump(results)
-	r.logger.Send("info", fmt.Sprintf("task Id '%s', result:'%s'", req.TaskId, godump.DumpStr(results)))
-
-	resByte, err := json.Marshal(responses.Response{
+	response := responses.Response{
 		TaskId:           req.TaskId,
 		Source:           req.Source,
-		FoundInformation: results,
-	})
+		FoundInformation: make([]responses.DetailedInformation, 0),
+	}
+
+	//поиск подробной информации о сенсорах
+	foundInfo, err := r.commonInfo.Search(ctx, req.ListSensor)
 	if err != nil {
+		response.Error = err.Error()
 		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
-		r.chToNatsApi <- &natsapi.ObjectBeingTransferred{
-			Id:   msg.GetId(),
-			Data: fmt.Appendf(nil, strJson, err.Error()),
-		}
-
-		return
+	} else {
+		r.logger.Send("info", fmt.Sprintf("task Id '%s', the search was completed successfully, sensors list:'%v'", req.TaskId, req.ListSensor))
+		godump.Dump(foundInfo)
 	}
 
-	r.counter.SendMessage("update processed events", 1)
-	r.logger.Send("info", fmt.Sprintf("the request for taskId '%s' from source '%s' has been processed", req.TaskId, req.Source))
+	response.FoundInformation = foundInfo
 
-	r.chToNatsApi <- &natsapi.ObjectBeingTransferred{
-		Id:   msg.GetId(),
-		Data: resByte,
+	resByte, err := json.Marshal(response)
+	if err != nil {
+		obt.Data = fmt.Appendf(nil, strJson, err.Error())
+		r.logger.Send("error", supportingfunctions.CustomError(err).Error())
+	} else {
+		obt.Data = resByte
+		r.counter.SendMessage("update processed events", 1)
+		r.logger.Send("info", fmt.Sprintf("the request for taskId '%s' from source '%s' has been processed", req.TaskId, req.Source))
 	}
+
+	r.chToNatsApi <- &obt
 }

@@ -1,4 +1,4 @@
-ARG TAG_NAME=golang:1.24.3-alpine
+ARG TAG_NAME=golang:1.26.3-alpine
 ARG IMAGE_NAME=alpine
 
 FROM  ${TAG_NAME} AS packages_image

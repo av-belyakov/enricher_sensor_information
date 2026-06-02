@@ -13,9 +13,10 @@ type DetailedInformation struct {
 	HomeNet                  string `json:"home_net"`                   //перечень домашних сетей
 	OrgName                  string `json:"organization_name"`          //наименование организации
 	SensorId                 string `json:"sensor_id"`                  //идентификатор сенсора
-	ObjectArea               string `json:"object_area"`                //сфера деятельности объекта
+	ObjectArea               string `json:"object_area"`                //сфера деятельности объекта (по информации НКЦКИ)
 	FullOrgName              string `json:"full_organization_name"`     //полное наименование организации
 	SpecialSensorId          string `json:"special_sensor_id"`          //специальный идентификатор сенсора, нужен для поиска информации в Zabbix
 	SubjectRussianFederation string `json:"subject_russian_federation"` //субъект Российской Федерации
+	NetboxTenantGroup        string `json:"netbox_tenant_group"`        //группа арендаторов по netbox (альтернативная сфера деятельности объекта, может отличатся от object_area)
 	Error                    string `json:"error"`
 }

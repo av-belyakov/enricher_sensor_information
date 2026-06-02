@@ -3,6 +3,8 @@ package constants
 const (
 	Root_Dir = "enricher_sensor_information"
 
+	Devices_Limit = 350 // размер выгружаемых из Netbox устройств
+
 	Ansi_Reset                 = "\033[0m"
 	Ansi_White                 = "\033[97m"
 	Ansi_Dark_Gray             = "\033[90m"
