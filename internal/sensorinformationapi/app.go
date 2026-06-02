@@ -1,6 +1,7 @@
 package sensorinformationapi
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 )
 
 // New настраивает новый модуль взаимодействия с API
-func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, error) {
+func New(ctx context.Context, opts ...sensorInformationClientOptions) (*SensorInformationClient, error) {
 	var (
 		zConn *connectionjsonrpc.ZabbixConnectionJsonRPC
 
@@ -54,6 +55,10 @@ func New(opts ...sensorInformationClientOptions) (*SensorInformationClient, erro
 		return api, err
 	}
 	api.zabbixConn = zConn
+	// авторизуемся в Zabbix
+	if err := api.zabbixConn.AuthorizationStart(ctx); err != nil {
+		return api, err
+	}
 
 	//инициализация соединения с Netbox
 	netboxConn, err := netboxinteractions.New(

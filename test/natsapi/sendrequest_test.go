@@ -96,12 +96,10 @@ func TestGetSensorCommonInfo(t *testing.T) {
 	msg, err := nc.RequestWithContext(t.Context(), SUBSCRIPTION, []byte(`{
 			"source": "source for testing",
 	  		"task_id": "41af7c2b34",
-	   		"list_sensors": ["8030073", "8030141", "8030017", "310073"]
+	   		"list_sensors": ["8030073", "8030141", "8030017", "310073", "310067", "530013", "570027", "630019"]
 		}`))
 
 	assert.NotNil(t, msg)
-
-	fmt.Println("Message:", string(msg.Data))
 
 	res := ResponseData{}
 	if msg != nil {

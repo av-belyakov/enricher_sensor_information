@@ -133,9 +133,10 @@ func (d *DiContainer) NatsConnecter(ctx context.Context) NatsConnecter {
 }
 
 // SensorInformationDB подключение к БД с данными о сенсорах
-func (d *DiContainer) SensorInformationDB() SensorInformationConnecter {
+func (d *DiContainer) SensorInformationDB(ctx context.Context) SensorInformationConnecter {
 	if d.sensorInformationDB == nil {
 		client, err := sensorinformationapi.New(
+			ctx,
 			sensorinformationapi.WithZabbixUseTLS(d.Configer().GetSensorInformationDB().ZabbixUseTLS),
 			sensorinformationapi.WithZabbixHost(d.Configer().GetSensorInformationDB().ZabbixHost),
 			sensorinformationapi.WithZabbixPort(d.Configer().GetSensorInformationDB().ZabbixPort),

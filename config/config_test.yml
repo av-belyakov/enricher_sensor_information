@@ -4,7 +4,7 @@ NATS:
   cache_ttl: 4800
   subscription: object.sensorinforeq.test
 SensorInformationDataBase:
-  zabbix_use_tls: false # Использовать TLS для подключения к Zabbix
+  zabbix_use_tls: true # Использовать TLS для подключения к Zabbix
   zabbix_host: 192.168.9.45
   zabbix_port: 443
   zabbix_user: 803.a.belyakov@avz-center.ru

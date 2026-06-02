@@ -60,9 +60,9 @@ func TestMain(t *testing.M) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	fmt.Printf("Config:'%+v'\n", cfg.GetSensorInformationDB())
 	if err = zConn.AuthorizationStart(context.TODO()); err != nil {
-
+		log.Fatalln(err)
 	}
 
 	os.Exit(t.Run())

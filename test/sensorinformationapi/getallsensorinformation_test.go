@@ -27,6 +27,7 @@ func TestGetFullSensorInformation(t *testing.T) {
 	}
 
 	siClient, err := sensorinformationapi.New(
+		t.Context(),
 		sensorinformationapi.WithZabbixHost(cfg.GetSensorInformationDB().ZabbixHost),
 		sensorinformationapi.WithZabbixUser(cfg.GetSensorInformationDB().ZabbixUser),
 		sensorinformationapi.WithZabbixPasswd(cfg.GetSensorInformationDB().ZabbixPasswd),

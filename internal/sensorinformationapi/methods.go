@@ -23,17 +23,10 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 	var g errgroup.Group
 	// поиск основной информации в Zabbix и НКЦКИ
 	g.Go(func() error {
-		// авторизуемся в Zabbix
-		if err := api.zabbixConn.AuthorizationStart(ctx); err != nil {
-			return err
-		}
-
 		result, err := api.SearchCommonInformation(ctx, sensorsId)
 		for _, v := range result {
 			storage.Add(v)
 		}
-
-		println("-0000--- method 'SearchCommonInformation', Error:", err)
 
 		return err
 	})
@@ -43,8 +36,6 @@ func (api *SensorInformationClient) Search(ctx context.Context, sensorsId []stri
 		for _, v := range result {
 			storage.Add(v)
 		}
-
-		println("-1111--- method 'SearchAdditionalInformation', Error:", err)
 
 		return err
 	})
@@ -68,8 +59,6 @@ func (api *SensorInformationClient) SearchCommonInformation(ctx context.Context,
 			return response, ctx.Err()
 
 		default:
-			println("method 'SearchCommonInformation', sensorId:", sensorId, " get full sensor information")
-
 			res := responses.DetailedInformation{
 				SensorId: sensorId,
 			}
@@ -135,12 +124,8 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 		countSteps int
 	)
 
-	println("method 'SearchAdditionalInformation', sensorsId:", sensorsId)
-
 	countDevices, _, err := api.netboxConn.GetCountDevices(ctx)
 	if err != nil {
-		println("method 'SearchAdditionalInformation', 111 Error:", err)
-
 		return response, err
 	}
 
@@ -154,19 +139,13 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 	for step := range countSteps {
 		select {
 		case <-ctx.Done():
-			println("method 'SearchAdditionalInformation', 222 Error:", err)
-
 			return response, ctx.Err()
 
 		default:
-			println("method 'SearchAdditionalInformation', step:", step)
-
 			// получаем ограниченную информацию об устройствах, что бы получить внутренний id устройства
 			// который понадобится для запроса дополнительной информации об группе арендаторов
 			devices, statusCode, err := api.netboxConn.GetDevicesLimitInformation(ctx, constants.Devices_Limit, step*constants.Devices_Limit)
 			if err != nil {
-				println("method 'SearchAdditionalInformation', 333 Error:", err)
-
 				return response, err
 			}
 
@@ -194,13 +173,9 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 	for sensorId, internalId := range sensors {
 		select {
 		case <-ctx.Done():
-			println("method 'SearchAdditionalInformation', 444 Error:", err)
-
 			return response, ctx.Err()
 
 		default:
-			println("method 'SearchAdditionalInformation', sensorId:", sensorId)
-
 			tenantsGroup, _, err := api.netboxConn.GetTenantGroups(ctx, internalId)
 			if err != nil {
 				response = append(response, responses.DetailedInformation{
@@ -217,8 +192,6 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 			})
 		}
 	}
-
-	println("method 'SearchAdditionalInformation', Final Error:", err)
 
 	return response, nil
 }

@@ -37,7 +37,7 @@ func NewApp(ctx context.Context) *App {
 		diContainer: dicontainer.NewDIContainer(rootPath, ch),
 	}
 
-	// настройка обёртки для взаимодействия с Zabbix
+	// настройка обёртки для взаимодействия с Zabbix (отправка метрик)
 	zabbixSettings := wrappers.WrappersZabbixInteractionSettings{
 		NetworkPort: app.diContainer.Configer().GetCommon().Zabbix.NetworkPort,
 		NetworkHost: app.diContainer.Configer().GetCommon().Zabbix.NetworkHost,
@@ -62,7 +62,7 @@ func NewApp(ctx context.Context) *App {
 		app.diContainer.Counter(ctx),
 		app.diContainer.Logger(ctx),
 		router.RouterSettings{
-			SearchCommonInfo: app.diContainer.SensorInformationDB(),
+			SearchCommonInfo: app.diContainer.SensorInformationDB(ctx),
 			ChanFromNatsApi:  app.diContainer.NatsConnecter(ctx).GetChFromModule(),
 			ChanToNatsApi:    app.diContainer.NatsConnecter(ctx).GetChToModule(),
 		})
