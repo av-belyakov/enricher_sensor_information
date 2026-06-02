@@ -5,11 +5,10 @@ go 1.26.3
 require (
 	github.com/av-belyakov/enricher_geoip v0.0.0-20250618141817-662aee0b2dba
 	github.com/av-belyakov/simplelogger v0.0.0-20250924090323-6ab0607b4a4b
-	github.com/av-belyakov/zabbixapicommunicator v0.0.0-20250618124251-10a4a23cd7ca
 	github.com/av-belyakov/zabbixapicommunicator/v2 v2.4.7
 	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/elastic/go-elasticsearch/v8 v8.19.6
-	github.com/go-playground/validator/v10 v10.30.2
+	github.com/go-playground/validator/v10 v10.30.3
 	github.com/goforj/godump v1.9.1
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
@@ -45,9 +44,9 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	go.opentelemetry.io/otel v1.43.0 // indirect
-	go.opentelemetry.io/otel/metric v1.43.0 // indirect
-	go.opentelemetry.io/otel/trace v1.43.0 // indirect
+	go.opentelemetry.io/otel v1.44.0 // indirect
+	go.opentelemetry.io/otel/metric v1.44.0 // indirect
+	go.opentelemetry.io/otel/trace v1.44.0 // indirect
 	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/sync v0.20.0
 	golang.org/x/sys v0.45.0 // indirect
