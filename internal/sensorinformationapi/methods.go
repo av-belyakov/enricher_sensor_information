@@ -154,11 +154,11 @@ func (api *SensorInformationClient) SearchAdditionalInformation(ctx context.Cont
 				// устройств могут не точно соответствовать искомому сенсору, например '570027 (48832465)'
 				// поэтому осуществляется поиск в срезе
 
-				for _, device := range devices.Results {
+				for key, device := range devices.Results {
 					if index := slices.IndexFunc(sensorsId, func(sensorId string) bool {
 						return strings.Contains(device.Name, sensorId)
 					}); index != -1 {
-						sensors[sensorsId[index]] = devices.Results[index].Id
+						sensors[sensorsId[key]] = devices.Results[key].Id
 					}
 				}
 
