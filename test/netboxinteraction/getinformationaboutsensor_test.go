@@ -43,7 +43,11 @@ func TestGetInformationAboutSensor(t *testing.T) {
 
 			// список id устройств
 			listId          []int    = []int{}
-			searchSensorsId []string = []string{"220065", "308051", "310067", "530013", "570027", "630019", "630062", "8030015"}
+			searchSensorsId []string = []string{
+				"220052", // Связь
+				"220063", // Образование
+			}
+			//searchSensorsId []string = []string{"220065", "308051", "310067", "530013", "570027", "630019", "630062", "8030015"}
 		)
 
 		t.Run("Тест 1.1. Получить общее количество устройств", func(t *testing.T) {
@@ -79,16 +83,37 @@ func TestGetInformationAboutSensor(t *testing.T) {
 				}
 				assert.Equal(t, statusCode, http.StatusOK)
 
+				//fmt.Println("Devices:", devices)
+
+				/*
+					220052 - id 965
+					220063 - id 1600
+				*/
+
 				if statusCode == http.StatusOK {
 					// было бы лучше класть результат в карту где ключем является name устройства, но к сожалению имена
 					// устройств могут не точно соответствовать искомому сенсору, например '570027 (48832465)'
 					// поэтому осуществляется поиск в срезе
 
-					for _, device := range devices.Results {
+					for key, device := range devices.Results {
 						if index := slices.IndexFunc(searchSensorsId, func(sensorId string) bool {
-							return strings.Contains(device.Name, sensorId)
+							//fmt.Println("searchSensorsId:", searchSensorsId)
+							//fmt.Println("device.Name:", device.Name)
+
+							if strings.Contains(device.Name, sensorId) {
+								fmt.Println("device.Name", device.Name, " ==", sensorId, " sensorId")
+
+								return true
+							}
+
+							return false
+
+							//return strings.Contains(device.Name, sensorId)
 						}); index != -1 {
-							listId = append(listId, devices.Results[index].Id)
+							fmt.Println("found index:", index)
+							fmt.Println("Key:", key)
+
+							listId = append(listId, devices.Results[key].Id)
 						}
 					}
 
