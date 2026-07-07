@@ -3,6 +3,7 @@ package netboxinteraction
 import (
 	"fmt"
 	"log"
+	"maps"
 	"math"
 	"net/http"
 	"os"
@@ -42,11 +43,17 @@ func TestGetInformationAboutSensor(t *testing.T) {
 			devicesLimit int = 350
 
 			// список id устройств
-			listId          []int    = []int{}
-			searchSensorsId []string = []string{
-				"220052", // Связь
-				"220063", // Образование
+			sensorIds map[string]int = map[string]int{
+				"220052":  0, // Связь
+				"220063":  0, // Образование
+				"308047":  0, // Оборонная промышленность
+				"310053":  0, // Ракетно-космическая промышленность
+				"430019":  0, // Транспорт
+				"570050":  0, // Образование
+				"570057":  0, // Оборонная промышленность
+				"8030154": 0, // Государственная/муниципальная власть
 			}
+			searchSensorsId []string
 			//searchSensorsId []string = []string{"220065", "308051", "310067", "530013", "570027", "630019", "630062", "8030015"}
 		)
 
@@ -73,7 +80,11 @@ func TestGetInformationAboutSensor(t *testing.T) {
 				log.Fatal("the device list cannot be empty")
 			}
 
-			var foundCountSteps int
+			for sensorId := range maps.Keys(sensorIds) {
+				searchSensorsId = append(searchSensorsId, sensorId)
+			}
+
+			var foundCountSteps, countIds int
 			for step := range countSteps {
 				foundCountSteps++
 
@@ -96,45 +107,46 @@ func TestGetInformationAboutSensor(t *testing.T) {
 					// поэтому осуществляется поиск в срезе
 
 					for key, device := range devices.Results {
-						if index := slices.IndexFunc(searchSensorsId, func(sensorId string) bool {
-							//fmt.Println("searchSensorsId:", searchSensorsId)
-							//fmt.Println("device.Name:", device.Name)
-
+						//if index
+						_ = slices.IndexFunc(searchSensorsId, func(sensorId string) bool {
 							if strings.Contains(device.Name, sensorId) {
 								fmt.Println("device.Name", device.Name, " ==", sensorId, " sensorId")
+
+								if _, ok := sensorIds[sensorId]; ok {
+									sensorIds[sensorId] = devices.Results[key].Id
+
+									countIds++
+								}
 
 								return true
 							}
 
 							return false
-
-							//return strings.Contains(device.Name, sensorId)
-						}); index != -1 {
-							fmt.Println("found index:", index)
-							fmt.Println("Key:", key)
-
-							listId = append(listId, devices.Results[key].Id)
-						}
+						})
+						//; index != -1 {
+						//	fmt.Println("found index:", index)
+						//	fmt.Println("Key:", key)
+						//}
 					}
 
-					if len(listId) == len(searchSensorsId) {
+					if countIds == len(searchSensorsId) {
 						break
 					}
 				}
 			}
 
-			fmt.Println("Все устройства найденны за", foundCountSteps, " попыток")
-			fmt.Println("Список id устройств:", listId)
+			fmt.Println("Все устройства найденны за", foundCountSteps, "попыток")
+			fmt.Println("Список id устройств:", sensorIds)
 		})
 
 		t.Run("Тест 1.3. Получить группы арендаторов каждого устройства", func(t *testing.T) {
-			for _, id := range listId {
-				tenantsGroup, statusCode, err := nbClient.GetTenantGroups(t.Context(), id)
+			for sensorId, deviceId := range sensorIds {
+				tenantsGroup, statusCode, err := nbClient.GetTenantGroups(t.Context(), deviceId)
 				assert.NoError(t, err)
 				assert.Equal(t, statusCode, http.StatusOK)
 				assert.NotEmpty(t, tenantsGroup)
 
-				fmt.Printf("device id=%d tenants group=%v\n", id, tenantsGroup)
+				fmt.Printf("sensor id=%s device id=%d tenants group=%v\n", sensorId, deviceId, tenantsGroup)
 			}
 		})
 		/*
